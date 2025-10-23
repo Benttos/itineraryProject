@@ -1,0 +1,7 @@
+footer{
+    
+    margin-left:0;
+    grid-row: 3;
+    border-top: 2px solid black;
+    text-align: center;
+}

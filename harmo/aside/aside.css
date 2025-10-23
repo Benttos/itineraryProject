@@ -1,0 +1,15 @@
+aside {
+    background-color: lightgrey;
+    border-right: 2px solid black;
+    margin: 0;
+    padding: 20px;
+    height: 100%;
+    box-sizing: border-box;
+}
+@media screen and (max-width: 1100px) {
+
+    aside{
+       display: none;
+    }
+
+}
