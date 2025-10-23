@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36511.14 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProxyCacheProject", "ProxyCacheProject\ProxyCacheProject.csproj", "{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerProject", "ServerProject\ServerProject.csproj", "{B7319C6A-1076-4199-8886-9D02BF9FEA0F}"
+	ProjectSection(ProjectDependencies) = postProject
+		{5A5B04B6-2A96-4A49-AB30-BCCDF833862E} = {5A5B04B6-2A96-4A49-AB30-BCCDF833862E}
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7319C6A-1076-4199-8886-9D02BF9FEA0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7319C6A-1076-4199-8886-9D02BF9FEA0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7319C6A-1076-4199-8886-9D02BF9FEA0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7319C6A-1076-4199-8886-9D02BF9FEA0F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5D1D9455-5E4F-4C10-9B3C-CB594C4DECC9}
+	EndGlobalSection
+EndGlobal
