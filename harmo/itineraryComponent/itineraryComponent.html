@@ -1,15 +1,20 @@
 <template>
     <link rel="stylesheet" href="/itineraryComponent/itineraryComponent.css">
     <div class="container">
-        <div class="depart">
-            <h2>Depart</h2>
-            <input type="text" id="departInput" placeholder="Écris ici...">
-            <ul id="departuresList"></ul>
+        <div class="listContainer">
+            <div class="depart">
+                <h2>Depart</h2>
+                <input type="text" id="departInput" placeholder="Écris ici...">
+                <ul id="departuresList"></ul>
+            </div>
+            <div class="arrivee">
+                <h2>Arrivée</h2>
+                <input type="text" id="arriveeInput" placeholder="Écris ici...">
+                <ul id="arrivalsList"></ul>
+            </div>
         </div>
-        <div class="arrivee">
-            <h2>Arrivée</h2>
-            <input type="text" id="arriveeInput" placeholder="Écris ici...">
-            <ul id="arrivalsList"></ul>
+        <div class="buttonContainer">
+            <button id = "itinerayButton">find ways</button>
         </div>
     </div>
 </template>
