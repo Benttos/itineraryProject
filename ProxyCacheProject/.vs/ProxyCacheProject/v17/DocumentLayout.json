@@ -1,37 +1,37 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\",
+  "WorkspaceRootPath": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{B7319C6A-1076-4199-8886-9D02BF9FEA0F}|ServerProject\\ServerProject.csproj|c:\\users\\karat\\onedrive\\bureau\\ecole_inge\\si4\\middle_ware\\project\\proxycacheproject\\serverproject\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{B7319C6A-1076-4199-8886-9D02BF9FEA0F}|ServerProject\\ServerProject.csproj|c:\\users\\karat\\onedrive\\bureau\\ecole_inge\\middleware\\itineraryproject\\proxycacheproject\\serverproject\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B7319C6A-1076-4199-8886-9D02BF9FEA0F}|ServerProject\\ServerProject.csproj|solutionrelative:serverproject\\server.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}|ProxyCacheProject\\ProxyCacheProject.csproj|C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\proxycacheproject\\genericproxycache.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}|ProxyCacheProject\\ProxyCacheProject.csproj|solutionrelative:proxycacheproject\\genericproxycache.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}|ProxyCacheProject\\ProxyCacheProject.csproj|C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\proxycacheproject\\iproxy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}|ProxyCacheProject\\ProxyCacheProject.csproj|solutionrelative:proxycacheproject\\iproxy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{B7319C6A-1076-4199-8886-9D02BF9FEA0F}|ServerProject\\ServerProject.csproj|C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\serverproject\\iserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{B7319C6A-1076-4199-8886-9D02BF9FEA0F}|ServerProject\\ServerProject.csproj|C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\serverproject\\iserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B7319C6A-1076-4199-8886-9D02BF9FEA0F}|ServerProject\\ServerProject.csproj|solutionrelative:serverproject\\iserver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}|ProxyCacheProject\\ProxyCacheProject.csproj|C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\proxycacheproject\\proxy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}|ProxyCacheProject\\ProxyCacheProject.csproj|C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\proxycacheproject\\iproxy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}|ProxyCacheProject\\ProxyCacheProject.csproj|solutionrelative:proxycacheproject\\iproxy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}|ProxyCacheProject\\ProxyCacheProject.csproj|C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\proxycacheproject\\proxy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}|ProxyCacheProject\\ProxyCacheProject.csproj|solutionrelative:proxycacheproject\\proxy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}|ProxyCacheProject\\ProxyCacheProject.csproj|C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\proxycacheproject\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "AbsoluteMoniker": "D:0:0:{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}|ProxyCacheProject\\ProxyCacheProject.csproj|C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\proxycacheproject\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
       "RelativeMoniker": "D:0:0:{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}|ProxyCacheProject\\ProxyCacheProject.csproj|solutionrelative:proxycacheproject\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B7319C6A-1076-4199-8886-9D02BF9FEA0F}|ServerProject\\ServerProject.csproj|C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\serverproject\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
+      "AbsoluteMoniker": "D:0:0:{B7319C6A-1076-4199-8886-9D02BF9FEA0F}|ServerProject\\ServerProject.csproj|C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\serverproject\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
       "RelativeMoniker": "D:0:0:{B7319C6A-1076-4199-8886-9D02BF9FEA0F}|ServerProject\\ServerProject.csproj|solutionrelative:serverproject\\app.config||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{B7319C6A-1076-4199-8886-9D02BF9FEA0F}|ServerProject\\ServerProject.csproj|C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\serverproject\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}|ProxyCacheProject\\ProxyCacheProject.csproj|C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\proxycacheproject\\genericproxycache.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5A5B04B6-2A96-4A49-AB30-BCCDF833862E}|ProxyCacheProject\\ProxyCacheProject.csproj|solutionrelative:proxycacheproject\\genericproxycache.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{B7319C6A-1076-4199-8886-9D02BF9FEA0F}|ServerProject\\ServerProject.csproj|C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\serverproject\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{B7319C6A-1076-4199-8886-9D02BF9FEA0F}|ServerProject\\ServerProject.csproj|solutionrelative:serverproject\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
@@ -46,100 +46,102 @@
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "App.config",
-              "DocumentMoniker": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\ProxyCacheProject\\App.config",
-              "RelativeDocumentMoniker": "ProxyCacheProject\\App.config",
-              "ToolTip": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\ProxyCacheProject\\App.config",
-              "RelativeToolTip": "ProxyCacheProject\\App.config",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
-              "WhenOpened": "2025-10-20T15:26:16.481Z"
-            },
-            {
-              "$type": "Document",
               "DocumentIndex": 6,
-              "Title": "App.config",
-              "DocumentMoniker": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\ServerProject\\App.config",
-              "RelativeDocumentMoniker": "ServerProject\\App.config",
-              "ToolTip": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\ServerProject\\App.config",
-              "RelativeToolTip": "ServerProject\\App.config",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAkAAAASAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
-              "WhenOpened": "2025-10-20T09:00:54.718Z"
+              "Title": "GenericProxyCache.cs",
+              "DocumentMoniker": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\ProxyCacheProject\\GenericProxyCache.cs",
+              "RelativeDocumentMoniker": "ProxyCacheProject\\GenericProxyCache.cs",
+              "ToolTip": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\ProxyCacheProject\\GenericProxyCache.cs",
+              "RelativeToolTip": "ProxyCacheProject\\GenericProxyCache.cs",
+              "ViewState": "AgIAAAwAAAAAAAAAAAAkwCgAAAAvAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T12:08:10.837Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
-              "Title": "IServer.cs",
-              "DocumentMoniker": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\ServerProject\\IServer.cs",
-              "RelativeDocumentMoniker": "ServerProject\\IServer.cs",
-              "ToolTip": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\ServerProject\\IServer.cs",
-              "RelativeToolTip": "ServerProject\\IServer.cs",
-              "ViewState": "AgIAAA0AAAAAAAAAAADwvxYAAAAbAAAAAAAAAA==",
+              "Title": "Proxy.cs",
+              "DocumentMoniker": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\ProxyCacheProject\\Proxy.cs",
+              "RelativeDocumentMoniker": "ProxyCacheProject\\Proxy.cs",
+              "ToolTip": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\ProxyCacheProject\\Proxy.cs",
+              "RelativeToolTip": "ProxyCacheProject\\Proxy.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEwAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-13T09:45:30.896Z"
+              "WhenOpened": "2025-10-28T12:04:46.792Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IProxy.cs",
+              "DocumentMoniker": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\ProxyCacheProject\\IProxy.cs",
+              "RelativeDocumentMoniker": "ProxyCacheProject\\IProxy.cs",
+              "ToolTip": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\ProxyCacheProject\\IProxy.cs",
+              "RelativeToolTip": "ProxyCacheProject\\IProxy.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-10-28T12:04:31.06Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Server.cs",
-              "DocumentMoniker": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\ServerProject\\Server.cs",
+              "DocumentMoniker": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\ServerProject\\Server.cs",
               "RelativeDocumentMoniker": "ServerProject\\Server.cs",
-              "ToolTip": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\ServerProject\\Server.cs",
+              "ToolTip": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\ServerProject\\Server.cs",
               "RelativeToolTip": "ServerProject\\Server.cs",
-              "ViewState": "AgIAAEAAAAAAAAAAAAAkwEgAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAHEBAAAAAAAAAAAYwIYBAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-10-13T09:47:51.684Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "Program.cs",
-              "DocumentMoniker": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\ServerProject\\Program.cs",
-              "RelativeDocumentMoniker": "ServerProject\\Program.cs",
-              "ToolTip": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\ServerProject\\Program.cs",
-              "RelativeToolTip": "ServerProject\\Program.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAATAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-15T11:02:27.284Z"
+              "DocumentIndex": 4,
+              "Title": "App.config",
+              "DocumentMoniker": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\ProxyCacheProject\\App.config",
+              "RelativeDocumentMoniker": "ProxyCacheProject\\App.config",
+              "ToolTip": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\ProxyCacheProject\\App.config",
+              "RelativeToolTip": "ProxyCacheProject\\App.config",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
+              "WhenOpened": "2025-10-30T09:20:00.956Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "Proxy.cs",
-              "DocumentMoniker": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\ProxyCacheProject\\Proxy.cs",
-              "RelativeDocumentMoniker": "ProxyCacheProject\\Proxy.cs",
-              "ToolTip": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\ProxyCacheProject\\Proxy.cs",
-              "RelativeToolTip": "ProxyCacheProject\\Proxy.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAEQAAAA3AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-08T12:30:23.426Z"
+              "DocumentIndex": 5,
+              "Title": "App.config",
+              "DocumentMoniker": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\ServerProject\\App.config",
+              "RelativeDocumentMoniker": "ServerProject\\App.config",
+              "ToolTip": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\ServerProject\\App.config",
+              "RelativeToolTip": "ServerProject\\App.config",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAOAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000601|",
+              "WhenOpened": "2025-10-20T09:00:54.718Z"
             },
             {
               "$type": "Document",
               "DocumentIndex": 1,
-              "Title": "GenericProxyCache.cs",
-              "DocumentMoniker": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\ProxyCacheProject\\GenericProxyCache.cs",
-              "RelativeDocumentMoniker": "ProxyCacheProject\\GenericProxyCache.cs",
-              "ToolTip": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\ProxyCacheProject\\GenericProxyCache.cs",
-              "RelativeToolTip": "ProxyCacheProject\\GenericProxyCache.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAYAAAAAAAAAA==",
+              "Title": "IServer.cs",
+              "DocumentMoniker": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\ServerProject\\IServer.cs",
+              "RelativeDocumentMoniker": "ServerProject\\IServer.cs",
+              "ToolTip": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\ServerProject\\IServer.cs",
+              "RelativeToolTip": "ServerProject\\IServer.cs",
+              "ViewState": "AgIAAAQAAAAAAAAAAAAkwB4AAAAbAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-08T12:49:19.154Z"
+              "WhenOpened": "2025-10-13T09:45:30.896Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "IProxy.cs",
-              "DocumentMoniker": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\ProxyCacheProject\\IProxy.cs",
-              "RelativeDocumentMoniker": "ProxyCacheProject\\IProxy.cs",
-              "ToolTip": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\si4\\middle_ware\\project\\ProxyCacheProject\\ProxyCacheProject\\IProxy.cs",
-              "RelativeToolTip": "ProxyCacheProject\\IProxy.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAAAiwBcAAAAdAAAAAAAAAA==",
+              "DocumentIndex": 7,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\ServerProject\\Program.cs",
+              "RelativeDocumentMoniker": "ServerProject\\Program.cs",
+              "ToolTip": "C:\\Users\\karat\\OneDrive\\Bureau\\Ecole_inge\\middleware\\itineraryProject\\ProxyCacheProject\\ServerProject\\Program.cs",
+              "RelativeToolTip": "ServerProject\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-10-08T12:24:26.486Z"
+              "WhenOpened": "2025-10-15T11:02:27.284Z"
             }
           ]
         }

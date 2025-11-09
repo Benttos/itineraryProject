@@ -8,3 +8,13 @@ C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\ProxyCacheProj
 C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\ProxyCacheProject\ProxyCacheProject\obj\Debug\ProxyCac.CE8F3E54.Up2Date
 C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\ProxyCacheProject\ProxyCacheProject\obj\Debug\ProxyCacheProject.dll
 C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\ProxyCacheProject\ProxyCacheProject\obj\Debug\ProxyCacheProject.pdb
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ProxyCacheProject\bin\Debug\ProxyCacheProject.dll.config
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ProxyCacheProject\bin\Debug\ProxyCacheProject.dll
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ProxyCacheProject\bin\Debug\ProxyCacheProject.pdb
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ProxyCacheProject\bin\Debug\System.Configuration.ConfigurationManager.dll
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ProxyCacheProject\bin\Debug\System.Configuration.ConfigurationManager.xml
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ProxyCacheProject\obj\Debug\ProxyCacheProject.csproj.AssemblyReference.cache
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ProxyCacheProject\obj\Debug\ProxyCacheProject.csproj.CoreCompileInputs.cache
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ProxyCacheProject\obj\Debug\ProxyCac.CE8F3E54.Up2Date
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ProxyCacheProject\obj\Debug\ProxyCacheProject.dll
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ProxyCacheProject\obj\Debug\ProxyCacheProject.pdb

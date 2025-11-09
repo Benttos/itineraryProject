@@ -37,9 +37,6 @@ namespace ProxyCacheProject
 
             lock (_sync)
             {
-                existing = Get(key);
-                if (existing != null) return existing;
-
                 var value = valueFactory();
                 if (value == null) return null;
 

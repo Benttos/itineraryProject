@@ -24,7 +24,18 @@ namespace ServerProject
         [WebInvoke(Method = "GET", UriTemplate = "/getContract", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]
         string GetContract();
 
-        // TODO: ajoutez vos opérations de service ici
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "/getItinerary?fromLat={fromLat}&fromLon={fromLon}&toLat={toLat}&toLon={toLon}", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]
+        string GetItineray(string fromLat, string fromLon, string toLat, string toLon);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "/bestItinerary?fromLat={fromLat}&fromLon={fromLon}&toLat={toLat}&toLon={toLon}", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]
+        string BestItinerary(string fromLat, string fromLon, string toLat, string toLon);
+
+        // Endpoint to handle CORS preflight for getItinerary
+        [OperationContract]
+        [WebInvoke(Method = "OPTIONS", UriTemplate = "/getItinerary")]
+        void OptionsGetItinerary();
     }
 
     // Utilisez un contrat de données comme indiqué dans l'exemple ci-après pour ajouter les types composites aux opérations de service.

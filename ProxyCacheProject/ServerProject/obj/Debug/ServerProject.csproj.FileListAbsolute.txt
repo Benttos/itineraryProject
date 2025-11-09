@@ -9,3 +9,14 @@ C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\ProxyCacheProj
 C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\ProxyCacheProject\ServerProject\bin\Debug\Newtonsoft.Json.dll
 C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\ProxyCacheProject\ServerProject\bin\Debug\Newtonsoft.Json.xml
 C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\ProxyCacheProject\ServerProject\obj\Debug\ServerPr.A886E461.Up2Date
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ServerProject\bin\Debug\ServerProject.dll.config
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ServerProject\bin\Debug\ServerProject.dll
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ServerProject\bin\Debug\ServerProject.pdb
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ServerProject\bin\Debug\Newtonsoft.Json.dll
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ServerProject\bin\Debug\Newtonsoft.Json.xml
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ServerProject\obj\Debug\ServerProject.csproj.AssemblyReference.cache
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ServerProject\obj\Debug\ServerProject.csproj.CoreCompileInputs.cache
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ServerProject\obj\Debug\XsdGeneratedCode\GeneratedXsdTypes.cs
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ServerProject\obj\Debug\ServerPr.A886E461.Up2Date
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ServerProject\obj\Debug\ServerProject.dll
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\ServerProject\obj\Debug\ServerProject.pdb
