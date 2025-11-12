@@ -13,6 +13,7 @@ let DepartPingmarker = L.marker([48.8566, 2.3522],{color: '##ff000a'}).addTo(map
 let ArrivalPingmarker;
 let DepartCoordinates;
 let ArrivalCordinates;
+let routeLayer; // couche de l'itinéraire courant
 
 const coordonne = document.querySelector('itinerary-component');
 
@@ -20,6 +21,12 @@ coordonne.addEventListener('coordonne-selected', (event) => {
     const { cityCoord } = event.detail;
     const  position = event.detail.position;
     
+    // Si l'utilisateur modifie un point, retirer l'itinéraire existant
+    if (routeLayer) {
+      map.removeLayer(routeLayer);
+      routeLayer = undefined;
+    }
+
     if(position === "depart"){
       if (DepartPingmarker) {
         map.removeLayer(DepartPingmarker);
@@ -42,13 +49,24 @@ coordonne.addEventListener('coordonne-selected', (event) => {
 });
 
 
+document.addEventListener('Itinerary', e => {
+console.log('doc got Itinerary', e.detail, e.composed, e.bubbles, e.composedPath());
+});
+console.log('host:', coordonne);
 
-coordonne.addEventListener('Itinerary',(event) => {
-    const {route} = event.detail;
-    console.log("voici la :" + route);
-    geoCoordinate = route.geometry;
-    console.log("ce que je dois mettre sur la map : "+geoCoordinate);
-    L.geoJSON(geoCoordinate).addTo(map);
+
+document.addEventListener('Itinerary',(event) => {
+    const { route } = event.detail || {};
+    const first = Array.isArray(route) ? route[0] : route;
+    const geoCoordinate = route.geometry;
+    if (!first) { console.warn('Itinerary reçu sans route', event.detail); return; }
+    const geometry = first.geometry || first;
+    console.log("rooute sur la map",geoCoordinate)
+    // Remplacer l'ancien itinéraire par le nouveau, si présent
+    if (routeLayer) {
+      map.removeLayer(routeLayer);
+    }
+    routeLayer = L.geoJSON(geometry).addTo(map);
 });
 
 

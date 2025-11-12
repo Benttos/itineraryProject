@@ -12,13 +12,49 @@
     height: 100%;
 }
 
+/* Positionne les listes d'autocomplétion en overlay pour ne pas pousser la mise en page */
+.depart, .arrivee {
+    position: relative;
+    width: 100%;
+    max-width: 360px;
+}
+
+.depart input, .arrivee input {
+    width: 100%;
+}
+
+.depart ul, .arrivee ul {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: calc(100% + 4px);
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    max-height: 180px; /* évite d'ajouter un scroll à la page */
+    overflow-y: auto;   /* défilement interne si trop d'éléments */
+    margin: 0;
+    padding: 4px 0;
+    list-style: none;
+    z-index: 1000;
+}
+
+/* Cache la liste quand elle est vide */
+.depart ul:empty, .arrivee ul:empty {
+    display: none;
+}
+
 
 
 .buttonContainer {
     display: flex;
     grid-row: 2;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    gap: 0.5rem;
+    min-height: 130px; /* réserve l'espace pour éviter le shift et le scroll */
 }
 
 button {
@@ -29,3 +65,15 @@ li:hover{
     cursor: pointer;
     background-color: gainsboro;
 }
+
+.steps {
+    padding: 0.5rem 1rem;
+    font-size: 0.95rem;
+    overflow: hidden;
+    width: 100%;
+}
+
+.stepHeader { color: #333; margin-bottom: 0.25rem; }
+.stepLine { margin: 0.25rem 0 0.5rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; }
+.nav { display: flex; gap: 0.5rem; }
+.nav button[disabled] { opacity: 0.5; cursor: not-allowed; }

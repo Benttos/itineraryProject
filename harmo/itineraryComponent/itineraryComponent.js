@@ -22,6 +22,17 @@ class ItineraryComponent extends HTMLElement {
             const arriveeBtn = shadowRoot.getElementById('arriveeBtn');
 
             const itineraryButton = shadowRoot.getElementById('itinerayButton');
+            const prevBtn = shadowRoot.getElementById('prevStepBtn');
+            const nextBtn = shadowRoot.getElementById('nextStepBtn');
+            this.currentStepIndex = -1;
+            this.steps = [];
+            const updateNav = () => {
+                if (!prevBtn || !nextBtn) return;
+                prevBtn.disabled = this.currentStepIndex <= 0;
+                nextBtn.disabled = this.currentStepIndex < 0 || this.currentStepIndex >= this.steps.length - 1;
+            };
+            if (prevBtn) prevBtn.addEventListener('click', () => { this.moveStep(-1); updateNav(); });
+            if (nextBtn) nextBtn.addEventListener('click', () => { this.moveStep(1); updateNav(); });
 
             let departCoordinate ;
             let arrivalCoordinate ;
@@ -38,6 +49,8 @@ class ItineraryComponent extends HTMLElement {
                     console.log("Parsed"+departCoordinateParse+"end"+arrivalCoordinateParse);
                     route = await this.getRoute(departCoordinateParse[1],departCoordinateParse[0],arrivalCoordinateParse[1],arrivalCoordinateParse[0]);
                     console.log(route);
+                    // Affiche une étape à la fois avec navigation
+                    this.renderSteps(route);
                 }
             });
 
@@ -57,6 +70,8 @@ class ItineraryComponent extends HTMLElement {
                 if (!li || !shadowRoot.getElementById('departuresList').contains(li)) return; 
                 shadowRoot.getElementById('departInput').value = li.textContent;
                 departCoordinate = await this.getCity(li.textContent,"depart");
+                // Masque la liste après sélection
+                shadowRoot.getElementById('departuresList').innerHTML = '';
               });
 
               shadowRoot.getElementById('arrivalsList').addEventListener('click',async (event) => {
@@ -65,6 +80,8 @@ class ItineraryComponent extends HTMLElement {
                 shadowRoot.getElementById('arriveeInput').value = li.textContent;
                 arrivalCoordinate = await this.getCity(li.textContent,"arriver");
                 console.log("after call:"+arrivalCoordinate)
+                // Masque la liste après sélection
+                shadowRoot.getElementById('arrivalsList').innerHTML = '';
               });
 
             shadowRoot.getElementById('arriveeInput').addEventListener('input', () => {
@@ -86,7 +103,7 @@ class ItineraryComponent extends HTMLElement {
 
 
     async getRoute(fromLat,fromLon,toLat,toLon){
-        const url = `http://localhost:8733/Design_Time_Addresses/ServerProject/Server/getItinerary?fromLat=${fromLat}&fromLon=${fromLon}&toLat=${toLat}&toLon=${toLon}`;
+        const url = `http://localhost:8733/Design_Time_Addresses/ServerProject/Server/getBikeItineray?fromLat=${fromLat}&fromLon=${fromLon}&toLat=${toLat}&toLon=${toLon}`;
         console.log('getRoute called with:', fromLat, fromLon, toLat, toLon);
 
         const response = await fetch(url);
@@ -94,31 +111,113 @@ class ItineraryComponent extends HTMLElement {
             throw new Error('Network response was not ok');
         }
         const data = await response.json();
-        console.log('raw getRoute response:', data);
+        console.log('raw getRoute response:', data, typeof data);
 
-        let parsed;
-        if (data && typeof data.GetItinerayResult === 'string') {
-            try {
-                parsed = JSON.parse(data.GetItinerayResult);
-            } catch (e) {
-                console.error('Failed to parse GetItinerayResult:', e);
-                parsed = data.GetItinerayResult;
-            }
-        } else {
-            parsed = data;
+        // Normalise la réponse (gère plusieurs noms/propriétés possibles et JSON stringifié)
+        let raw = data?.GetBikeItineraryResult
+            ?? data?.GetBikeItinerayResult
+            ?? data?.GetItineraryResult
+            ?? data?.GetItinerayResult
+            ?? data;
+        try {
+            if (typeof raw === 'string') raw = JSON.parse(raw);
+        } catch (e) {
+            console.warn('Réponse impossible à parser', e, raw);
+            return;
         }
 
-        const normalized = {
-            route: parsed && parsed.routes ? parsed.routes : parsed
-        };
+        // Récupère la première route s'il y a une liste
+        const route = Array.isArray(raw?.routes) ? raw.routes[0] : (raw?.route ?? raw);
 
-        console.log('normalized route:', normalized);
-        this.dispatchEvent(new CustomEvent('Itinerary',{
-            detail: { route: normalized.route[0] },
+        // Normalise la géométrie en GeoJSON
+        let geometry = route?.geometry ?? route;
+        if (typeof geometry === 'string') {
+            try { geometry = JSON.parse(geometry); } catch {}
+        }
+        if (!geometry?.type || !geometry?.coordinates) {
+            console.warn('GeoJSON invalide', { raw, route, geometry });
+            return;
+        }
+        // Assure que route.geometry est l’objet GeoJSON
+        route.geometry = geometry;
+
+        this.dispatchEvent(new CustomEvent('Itinerary', {
+            detail: { route },
             composed: true,
-            bubbles: true,
+            bubbles: true
         }));
-        return normalized;
+        return route;
+    }
+
+    clearSteps() {
+        const container = this.shadowRoot?.getElementById('routeSteps');
+        if (container) {
+            const cur = this.shadowRoot.getElementById('currentStep');
+            const prog = this.shadowRoot.getElementById('stepProgress');
+            if (cur) cur.textContent = '';
+            if (prog) prog.textContent = '';
+        }
+        this.steps = [];
+        this.currentStepIndex = -1;
+        const prevBtn = this.shadowRoot?.getElementById('prevStepBtn');
+        const nextBtn = this.shadowRoot?.getElementById('nextStepBtn');
+        if (prevBtn) prevBtn.disabled = true;
+        if (nextBtn) nextBtn.disabled = true;
+    }
+
+    formatDistance(meters) {
+        if (meters == null) return '';
+        if (meters < 1000) return `${Math.round(meters)} m`;
+        return `${(meters/1000).toFixed(1)} km`;
+    }
+
+    buildInstruction(step) {
+        const instr = step?.maneuver?.instruction;
+        if (instr) return instr;
+        const type = step?.maneuver?.type;
+        const mod = step?.maneuver?.modifier;
+        const name = step?.name || '';
+        const parts = [type, mod, name].filter(Boolean);
+        return parts.join(' ');
+    }
+
+    renderSteps(route) {
+        // Initialise steps et affiche la première
+        const leg = route?.legs?.[0];
+        const steps = Array.isArray(leg?.steps) ? leg.steps : [];
+        this.steps = steps;
+        this.currentStepIndex = steps.length ? 0 : -1;
+        this.renderCurrentStep();
+    }
+
+    moveStep(delta) {
+        if (!Array.isArray(this.steps) || !this.steps.length) return;
+        const next = this.currentStepIndex + delta;
+        if (next < 0 || next >= this.steps.length) return;
+        this.currentStepIndex = next;
+        this.renderCurrentStep();
+    }
+
+    renderCurrentStep() {
+        const cur = this.shadowRoot?.getElementById('currentStep');
+        const prog = this.shadowRoot?.getElementById('stepProgress');
+        const prevBtn = this.shadowRoot?.getElementById('prevStepBtn');
+        const nextBtn = this.shadowRoot?.getElementById('nextStepBtn');
+        if (!cur || !prog) return;
+        if (this.currentStepIndex < 0) {
+            cur.textContent = 'Aucune étape disponible.';
+            prog.textContent = '';
+            if (prevBtn) prevBtn.disabled = true;
+            if (nextBtn) nextBtn.disabled = true;
+            return;
+        }
+        const step = this.steps[this.currentStepIndex];
+        const text = this.buildInstruction(step) || (step?.name ? `Suivre ${step.name}` : 'Continuer');
+        const dist = this.formatDistance(step?.distance);
+        cur.textContent = dist ? `${text} • ${dist}` : text;
+        prog.textContent = `Etape ${this.currentStepIndex + 1}/${this.steps.length}`;
+        if (prevBtn) prevBtn.disabled = this.currentStepIndex <= 0;
+        if (nextBtn) nextBtn.disabled = this.currentStepIndex >= this.steps.length - 1;
     }
 
     async getCity(name,position) { 
@@ -126,6 +225,8 @@ class ItineraryComponent extends HTMLElement {
         const ulArrivee = this.shadowRoot.getElementById('arrivalsList');
         let currentUl = position === "depart" ? ulDepart : ulArrivee;
         currentUl.innerHTML = '';
+        // Dès qu'on modifie un point, on efface les étapes affichées
+        this.clearSteps();
         if (!name) return null;
         console.log(name);
         const url = `https://api-adresse.data.gouv.fr/search/?q=${encodeURIComponent(name)}&limit=5`;

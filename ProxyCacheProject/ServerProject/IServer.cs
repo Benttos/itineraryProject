@@ -25,8 +25,12 @@ namespace ServerProject
         string GetContract();
 
         [OperationContract]
-        [WebInvoke(Method = "GET", UriTemplate = "/getItinerary?fromLat={fromLat}&fromLon={fromLon}&toLat={toLat}&toLon={toLon}", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]
-        string GetItineray(string fromLat, string fromLon, string toLat, string toLon);
+        [WebInvoke(Method = "GET", UriTemplate = "/getBikeItineray?fromLat={fromLat}&fromLon={fromLon}&toLat={toLat}&toLon={toLon}", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]
+        string GetBikeItineray(string fromLat, string fromLon, string toLat, string toLon);
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "/getPedestrianItinerary?fromLat={fromLat}&fromLon={fromLon}&toLat={toLat}&toLon={toLon}", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]
+        string GetPedestrianItinerary(string fromLat, string fromLon, string toLat, string toLon);
 
         [OperationContract]
         [WebInvoke(Method = "GET", UriTemplate = "/bestItinerary?fromLat={fromLat}&fromLon={fromLon}&toLat={toLat}&toLon={toLon}", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]

@@ -1,0 +1,41 @@
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Node / JS
+node_modules/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Build outputs
+dist/
+build/
+out/
+
+# IDE/workspace (Visual Studio, VS Code, JetBrains)
+.vscode/
+.idea/
+.vs/
+ProxyCacheProject/.vs/
+
+# Visual Studio artifacts
+**/[Bb]in/
+**/[Oo]bj/
+*.user
+*.suo
+*.opendb
+*.VC.db
+*.vsidx
+*.ilk
+*.pdb
+*.cache
+
+# Logs
+*.log
+logs/
+
+# Misc
+coverage/
+.env
+.env.*
