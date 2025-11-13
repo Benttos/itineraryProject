@@ -16,7 +16,9 @@ namespace ProxyCacheProject
         [Description("Station")]
         Station,
         [Description("Itinerary")]
-        Itinerary
+        Itinerary,
+        [Description("City")]
+        City
     }
 
     public class Proxy : IProxy
@@ -31,7 +33,8 @@ namespace ProxyCacheProject
             {
                 { TypeOfCache.Contract, new GenericProxyCache<string>(5) },
                 { TypeOfCache.Station, new GenericProxyCache<string>(10) },
-                { TypeOfCache.Itinerary, new GenericProxyCache<string>(15) }
+                { TypeOfCache.Itinerary, new GenericProxyCache<string>(15) },
+                { TypeOfCache.City, new GenericProxyCache<string>(5000) }
             };
         }
 

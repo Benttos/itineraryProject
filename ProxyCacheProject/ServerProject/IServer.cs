@@ -40,6 +40,10 @@ namespace ServerProject
         [OperationContract]
         [WebInvoke(Method = "OPTIONS", UriTemplate = "/getItinerary")]
         void OptionsGetItinerary();
+
+        [OperationContract]
+        [WebInvoke(Method = "OPTIONS", UriTemplate = "/bestItinerary")]
+        void OptionsBestItinerary();
     }
 
     // Utilisez un contrat de données comme indiqué dans l'exemple ci-après pour ajouter les types composites aux opérations de service.

@@ -1,11 +1,13 @@
-﻿using ServerProject.ContractTypes;
+﻿using Newtonsoft.Json.Linq;
+using ServerProject.ContractTypes;
 using ServerProject.ProxyReference;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.ServiceModel.Web;
-using Newtonsoft.Json.Linq;
 using System.Globalization;
+using System.Linq;
+using System.Runtime.Remoting.Messaging;
+using System.ServiceModel;
+using System.ServiceModel.Web;
 
 namespace ServerProject
 {
@@ -29,7 +31,6 @@ namespace ServerProject
 
         public string GetStationOfcity(string city)
         {
-            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
             string link = "https://api.jcdecaux.com/vls/v3/stations?contract=" + city + "&apiKey=" + apiKey;
             string type = "Station";
             List<string> names = getCityNamesWithContract();
@@ -61,7 +62,7 @@ namespace ServerProject
 
         public string GetContract()
         {
-            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+            AddCorsheader();
             string link = "https://api.jcdecaux.com/vls/v3/contracts?apiKey=" + apiKey;
             string type = "Contract";
             return client.LookForData(link, type);
@@ -79,8 +80,6 @@ namespace ServerProject
 
         public string neareastCityWithContract(string lat, string lon)
         {
-            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
-
             if (!double.TryParse(lat, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var targetLat) ||
                 !double.TryParse(lon, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var targetLon))
             {
@@ -178,18 +177,24 @@ namespace ServerProject
 
         public string neareastCityWithContract2(string lat, string lon)
         {
-            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
             var contractsJson = GetContract();
             var contracts = JArray.Parse(contractsJson);
             string nearestCity = "";
             double nearestDistance = double.MaxValue;
+
+            // on parse avec InvariantCulture afin d'éviter les problèmes de format cf doc car pas tous compris mais ca peux casser 
+            if (!double.TryParse(lat, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out double parsedLat) ||
+                !double.TryParse(lon, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out double parsedLon))
+            {
+                return "pas de ville la plus proche"; //pas de ville la plus proche
+            }
+
             foreach (var contract in contracts) {
                 if (contract == null) continue;
                 var contractName = (string)contract["name"];
-                var contractLat = (double?)contract["latitude"];
-                var contractLon = (double?)contract["longitude"];
+                (double contractLat,double contractLon) = getCoordinateOfCity(contractName) ;
                 if (contractLat == null || contractLon == null) continue;
-                double distance = HaversineDistanceMeters(double.Parse(lat), double.Parse(lon), contractLat.Value, contractLon.Value);
+                double distance = HaversineDistanceMeters(parsedLat, parsedLon, contractLat, contractLon);
                 if (distance < nearestDistance) {
                     nearestDistance = distance;
                     nearestCity = contractName;
@@ -201,60 +206,179 @@ namespace ServerProject
 
         public string GetBikeItineray(string startLat, string startLon, string endLat, string endLon)
         {
-            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "http://localhost:8080");
+            AddCorsheader();
             string link = "https://router.project-osrm.org/route/v1/bicycle/" + startLon + "," + startLat + ";" + endLon + "," + endLat + "?steps=true&geometries=geojson&overview=full";
             return client.LookForData(link, "Itinerary");
         }
 
         public string GetPedestrianItinerary(string startLat, string startLon, string endLat, string endLon)
         {
-            WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
+            AddCorsheader();
             string link = "https://router.project-osrm.org/route/v1/foot/" + startLon + "," + startLat + ";" + endLon + "," + endLat + "?steps=true&geometries=geojson&overview=full";
             return client.LookForData(link, "Itinerary");
         }
 
-        private string neareastStationInCity(string city,string Lat,string Lon)
+        private (double,double) neareastStationInCity(string city,string Lat,string Lon)
         {
             try
             {
                 string stationJson = GetStationOfcity(city);
                 //dans cette ville on cherche la station la plus proche
                 var stations = JArray.Parse(stationJson);
-                double userLat = double.Parse(Lat);
-                double userLon = double.Parse(Lon);
+
+                // Parse user coords using InvariantCulture
+                if (!double.TryParse(Lat, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out double userLat) ||
+                    !double.TryParse(Lon, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out double userLon))
+                {
+                    return (-1, -1);
+                }
+
                 double minDistance = double.MaxValue;
+                double bestLat = 0.0;
+                double bestLon = 0.0;
+
                 foreach (var station in stations)
                 {
                     var pos = station["position"];
                     if (pos == null) continue;
+
+                    // changement de nom des clés possibles pour invariant au cas ou 
                     double stationLat = pos["lat"].Value<double>();
                     double stationLon = pos["lng"].Value<double>();
+
                     double distance = HaversineDistanceMeters(userLat, userLon, stationLat, stationLon);
                     if (distance < minDistance)
                     {
                         minDistance = distance;
+                        bestLat = stationLat;
+                        bestLon = stationLon;
                     }
                 }
+                return (bestLat, bestLon);
             }
             catch
             {
-                return "pas de station dans la ville ";
+                return (-1,-1);
             }
-            return "";
+        }
+
+        private (double,double) getCoordinateOfCity(string city)
+        {
+            string link = "https://api-adresse.data.gouv.fr/search/?q=$"+city+"&limit=1";
+            CompositeType element = new CompositeType(link, "City");
+            string result = client.LookForData(link, "City");
+            var parsedResult = JObject.Parse(result);
+            (double lat,double lon ) = parsedResult["features"]?[0]?["geometry"]?["coordinates"] != null ?
+                (parsedResult["features"][0]["geometry"]["coordinates"][1].Value<double>(),
+                 parsedResult["features"][0]["geometry"]["coordinates"][0].Value<double>()) : (-1, -1);
+            return (lat,lon);
         }
 
         public string BestItinerary(string startLat, string startLon, string endLat, string endLon)
         {
-            //on calcule le temps a pied
-            string pedestrianItinerary = GetPedestrianItinerary(startLat, startLon, endLat, endLon);
-            //on cherche la ville la plus proche du point de départ
-            string nearestCityName = neareastCityWithContract2(startLat, startLon);
-            //dans cett ville on veux la station la plus proche de nous 
-            
+            //on ajoute en-tete CORS car sinon marche pas 
+            AddCorsheader();
+            try
+            {
+                //on calcule le temps a pied
+                string pedestrianItinerary = GetPedestrianItinerary(startLat, startLon, endLat, endLon);
+                //on cherche la ville la plus proche du point de départ
+                string nearestCityNameStart = neareastCityWithContract2(startLat, startLon);
+                //dans cett ville on veux la station la plus proche de nous 
+                (double bestStationLat,double bestStationLon) = neareastStationInCity(nearestCityNameStart, startLat, startLon);
+                //on recupere mtn la station la plus proche du point d'arrivée
+                string nearestCityNameEnd = neareastCityWithContract2(endLat, endLon);
+                //dans cett ville on veux la station la plus proche de nous
+                (double bestStationEndLat, double bestStationEndLon) = neareastStationInCity(nearestCityNameEnd, endLat, endLon);
 
-            return "";
+
+                //on passe mtn a la logique on calcule le temps total avec les trois itinéraires
+                if(checkStation(bestStationLat,bestStationLon) && checkStation(bestStationEndLat, bestStationEndLon) && pedestrianItinerary!=null){
+                    // utiliser InvariantCulture pour convertir en chaîne (séparateur décimal = '.')
+                    string itineratyTobikeStartStation = GetPedestrianItinerary(startLat, startLon, bestStationLat.ToString(CultureInfo.InvariantCulture), bestStationLon.ToString(CultureInfo.InvariantCulture));
+                    string itineratyBike = GetBikeItineray(bestStationLat.ToString(CultureInfo.InvariantCulture), bestStationLon.ToString(CultureInfo.InvariantCulture), bestStationEndLat.ToString(CultureInfo.InvariantCulture), bestStationEndLon.ToString(CultureInfo.InvariantCulture));
+                    string itineraryFromEndStationToEnd = GetPedestrianItinerary(bestStationEndLat.ToString(CultureInfo.InvariantCulture), bestStationEndLon.ToString(CultureInfo.InvariantCulture), endLat, endLon);
+                    //on calcule le temps total
+                    var pedestrianRoute = JObject.Parse(pedestrianItinerary);
+                    var toBikeRoute = JObject.Parse(itineratyTobikeStartStation);
+                    var bikeRoute = JObject.Parse(itineratyBike);
+                    var fromBikeRoute = JObject.Parse(itineraryFromEndStationToEnd);
+                    //temps de la route à pied total
+                    double pedestrianDuration = pedestrianRoute["routes"]?[0]?["duration"]?.Value<double>() ?? double.MaxValue;
+                    //temps pour aller à la station de vélo
+                    double toBikeDuration = toBikeRoute["routes"]?[0]?["duration"]?.Value<double>() ?? double.MaxValue;
+                    //temps pour aller de la station de vélo du début à la station de vélo d'arrivée
+                    double bikeDuration = bikeRoute["routes"]?[0]?["duration"]?.Value<double>() ?? double.MaxValue;
+                    //temps pour aller de la station de vélo d'arrivée au point d'arrivée
+                    double fromBikeDuration = fromBikeRoute["routes"]?[0]?["duration"]?.Value<double>() ?? double.MaxValue;
+                    //temps total
+                    double totalDuration = toBikeDuration + bikeDuration + fromBikeDuration;
+                    if(totalDuration < pedestrianDuration)
+                    {
+                        var result = new JObject
+                        {
+                            ["methode"] = "withBike",
+                            ["numberOfItinerary"] = 3,
+                            ["stationCoordinate"] = new JObject
+                            {
+                                ["startStation"] = new JObject
+                                {
+                                    ["lat"] = bestStationLat,
+                                    ["lon"] = bestStationLon
+                                },
+                                ["endStation"] = new JObject
+                                {
+                                    ["lat"] = bestStationEndLat,
+                                    ["lon"] = bestStationEndLon
+                                }
+                            },
+                            ["itineraries"] = new JArray
+                            {
+                                toBikeRoute,
+                                bikeRoute,
+                                fromBikeRoute
+                            }
+                        };
+                        return result.ToString();
+                    }else
+                    {
+                        var result = new JObject
+                        {
+                            ["methode"] = "onFoot",
+                            ["numberOfItinerary"] = 1,
+                            ["itineraries"] = new JArray
+                            {
+                                pedestrianRoute
+                            }
+                        };
+                        return result.ToString();
+                    }
+                }else
+                {
+                    return "there a no walk and bike itinireraries available ";
+                }
+            }
+            catch (Exception ex)
+            {
+                // Retourne une erreur JSON lisible pour le client (facilite le debug)
+                var err = new JObject
+                {
+                    ["error"] = "internal_exception",
+                    ["message"] = ex.Message
+                };
+                return err.ToString();
+            }
         }
-       
+      
+
+        private Boolean checkStation(double lat,double lon)
+        {
+            if (lat == -1 || lon == -1)
+            {
+                return false;
+            }
+            return true;
+        }
 
 
         // Réponse au préflight OPTIONS (pour getItinerary)
@@ -270,11 +394,18 @@ namespace ServerProject
         // Réponse au préflight OPTIONS (pour bestItinerary)
         public void OptionsBestItinerary()
         {
-            var resp = WebOperationContext.Current.OutgoingResponse;
-            resp.StatusCode = System.Net.HttpStatusCode.OK;
-            resp.Headers.Add("Access-Control-Allow-Origin", "*");
-            resp.Headers.Add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-            resp.Headers.Add("Access-Control-Allow-Headers", "Content-Type,Accept");
+            var headers = WebOperationContext.Current.OutgoingResponse.Headers;
+            headers.Set("Access-Control-Allow-Origin", "*");
+            headers.Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+            headers.Set("Access-Control-Allow-Headers", "Content-Type,Accept");
+        }
+
+        private void AddCorsheader()
+        {
+            var headers = WebOperationContext.Current.OutgoingResponse.Headers;
+            headers.Set("Access-Control-Allow-Origin", "*");
+            headers.Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+            headers.Set("Access-Control-Allow-Headers", "Content-Type,Accept");
         }
 
         // Haversine en mètres
@@ -296,96 +427,6 @@ namespace ServerProject
             return deg * (Math.PI / 180.0);
         }
 
-        // --- Helpers OSRM / stations ---
 
-        // Extrait lat/lon depuis l'objet station JCDecaux
-        private bool TryGetStationPosition(JObject station, out double lat, out double lon)
-        {
-            lat = lon = double.NaN;
-            var pos = station?["position"] as JObject;
-            if (pos == null) return false;
-
-            // Correct tokens order : lat first, puis latitude ; lon tries lng/son/longitude
-            var latToken = pos["lat"] ?? pos["latitude"];
-            var lonToken = pos["lng"] ?? pos["lon"] ?? pos["longitude"];
-            if (latToken == null || lonToken == null) return false;
-
-            return double.TryParse(latToken.ToString(), NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out lat)
-                   && double.TryParse(lonToken.ToString(), NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out lon);
-        }
-
-        // Appel OSRM pour un profile donné — retourne l'objet JSON reçu ou null
-        private JObject TryGetOsrmRoute(string profile, double sLat, double sLon, double eLat, double eLon)
-        {
-            var sLonStr = sLon.ToString(CultureInfo.InvariantCulture);
-            var sLatStr = sLat.ToString(CultureInfo.InvariantCulture);
-            var eLonStr = eLon.ToString(CultureInfo.InvariantCulture);
-            var eLatStr = eLat.ToString(CultureInfo.InvariantCulture);
-
-            string link = $"https://router.project-osrm.org/route/v1/{profile}/{sLonStr},{sLatStr};{eLonStr},{eLatStr}?steps=false&geometries=geojson&overview=full";
-            try
-            {
-                string json = client.LookForData(link, "Itinerary");
-                if (string.IsNullOrWhiteSpace(json)) return null;
-                var obj = JObject.Parse(json);
-                if (obj["routes"] != null && obj["routes"].HasValues) return obj;
-            }
-            catch
-            {
-                // ignore and return null -> fallback handled by caller
-            }
-            return null;
-        }
-
-        // Essaie plusieurs profils OSRM (retourne true + route si trouvé)
-        private bool TryGetAnyOsrmRoute(string[] profiles, double sLat, double sLon, double eLat, double eLon, out JObject route)
-        {
-            route = null;
-            foreach (var p in profiles)
-            {
-                try
-                {
-                    var r = TryGetOsrmRoute(p, sLat, sLon, eLat, eLon);
-                    if (r != null)
-                    {
-                        route = r;
-                        return true;
-                    }
-                }
-                catch
-                {
-                    // try next profile
-                }
-            }
-            return false;
-        }
-
-        private double GetDurationFromOsrm(JObject route)
-        {
-            try
-            {
-                var token = route.SelectToken("routes[0].duration");
-                if (token == null) return double.NaN;
-                return token.Value<double>();
-            }
-            catch
-            {
-                return double.NaN;
-            }
-        }
-
-        private double GetDistanceFromOsrm(JObject route)
-        {
-            try
-            {
-                var token = route.SelectToken("routes[0].distance");
-                if (token == null) return double.NaN;
-                return token.Value<double>();
-            }
-            catch
-            {
-                return double.NaN;
-            }
-        }
     }
 }

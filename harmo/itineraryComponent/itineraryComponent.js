@@ -48,6 +48,8 @@ class ItineraryComponent extends HTMLElement {
                     const arrivalCoordinateParse = String(arrivalCoordinate).split(',');       
                     console.log("Parsed"+departCoordinateParse+"end"+arrivalCoordinateParse);
                     route = await this.getRoute(departCoordinateParse[1],departCoordinateParse[0],arrivalCoordinateParse[1],arrivalCoordinateParse[0]);
+                    const routeWithBike = await this.getBestRoute(departCoordinateParse[1],departCoordinateParse[0],arrivalCoordinateParse[1],arrivalCoordinateParse[0]);
+                    console.log('route with bike', routeWithBike);
                     console.log(route);
                     // Affiche une étape à la fois avec navigation
                     this.renderSteps(route);
@@ -99,12 +101,31 @@ class ItineraryComponent extends HTMLElement {
         });
     }
 
-  
+    async getBestRoute(fromLat,fromLon,toLat,toLon){
+        const url =`http://localhost:8733/Design_Time_Addresses/ServerProject/Server/bestItinerary?fromLat=${fromLat}&fromLon=${fromLon}&toLat=${toLat}&toLon=${toLon}`;
+        console.log('getbestItinerary called with:', fromLat, fromLon, toLat, toLon,url);
+        const response = await fetch(url);
+        if(!response.ok) {
+            throw new Error('Reponse From best itinerary not ok')
+        }
+        const data = await response.json();
+        console.log('mes data',data,typeof data);
+        const payload = typeof data === 'string' ? JSON.parse(data) : data;
+        const methode = payload?.methode;
+        console.log("je vais me deplacer a ", methode)
+        if(methode === 'withBike'){
+            this.dispatchEvent(new CustomEvent('bestBikeItinerary',{
+                detail : {payload},
+                composed: true,
+                bubbles: true 
+            }));
+        }
+        }
 
 
     async getRoute(fromLat,fromLon,toLat,toLon){
         const url = `http://localhost:8733/Design_Time_Addresses/ServerProject/Server/getBikeItineray?fromLat=${fromLat}&fromLon=${fromLon}&toLat=${toLat}&toLon=${toLon}`;
-        console.log('getRoute called with:', fromLat, fromLon, toLat, toLon);
+        console.log('getRoute called with:', fromLat, fromLon, toLat, toLon,url);
 
         const response = await fetch(url);
         if (!response.ok) {
@@ -112,6 +133,7 @@ class ItineraryComponent extends HTMLElement {
         }
         const data = await response.json();
         console.log('raw getRoute response:', data, typeof data);
+
 
         // Normalise la réponse (gère plusieurs noms/propriétés possibles et JSON stringifié)
         let raw = data?.GetBikeItineraryResult

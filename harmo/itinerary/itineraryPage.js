@@ -48,14 +48,36 @@ coordonne.addEventListener('coordonne-selected', (event) => {
   }
 });
 
-
-document.addEventListener('Itinerary', e => {
-console.log('doc got Itinerary', e.detail, e.composed, e.bubbles, e.composedPath());
+//to do si on veut ameliorer et mettre pls station mettre une liste de station et pas debut/fin afficcher les ping associer 
+document.addEventListener('bestBikeItineray',(event)=> {
+    //je recupere mes donner comme je le souhaite sans les avoir parser avant car déja mis dedans ce que j'avais besoin
+    const {itinerary} = event.detail || {};
+    //mes trois itineraire pied/velo/pied 
+    const routes = itinerary.itineraries;
+    //mtn que j'ai mes routes je veux afficher mes stations de vélo avec des points en plus de mes points de départ et d'arriver
+    console.log("je vais afficher les ping des satation")
+    const bikeStartStationLat = itinerary.startStation.lat ;
+    const bikeStartStationLon = itinerary.startStation.lon ;
+    const bikeEndStationLat = itinerary.endStation.lat ;
+    const bikeEndStationLon = itinerary.endStation.lon ;
+    //mtn on les affiches 
+    const startBikeStationPing = L.marker(bikeStartStationLat,bikeStartStationLon).addTo(map) ;
+    const endbikeStationPing = L.marker(bikeEndStationLat,bikeEndStationLon).addTo(map) ;
+    //et mtn on affiche les itineraires 
+    if(Array.isArray(routes)){
+      console.log("je vais afficher les routes mtn")
+      for(route in routes){
+        //recupere mon element en position 0 car la qu'est la geometrie
+        const first = Array.isArray(route) ? route[0] : route ;
+        const geometry = first.geometry || first ;
+        L.geoJSON(geometry).addTo(map);
+      }
+    }
 });
-console.log('host:', coordonne);
 
 
 document.addEventListener('Itinerary',(event) => {
+  // je recupere que une route et je prend la geometry qui est un ensemble de point qui mis dans Geojson me fait un itinineraire 
     const { route } = event.detail || {};
     const first = Array.isArray(route) ? route[0] : route;
     const geoCoordinate = route.geometry;
