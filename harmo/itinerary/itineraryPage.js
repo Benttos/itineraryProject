@@ -14,6 +14,17 @@ let ArrivalPingmarker;
 let DepartCoordinates;
 let ArrivalCordinates;
 let routeLayer; // couche de l'itinéraire courant
+const bikeStationMarkers = [];
+const bikeRouteLayers = [];
+
+//const clearLayers = (layers) => {
+//  while (layers.length) {
+//    const layer = layers.pop();
+//    if (layer) {
+//      map.removeLayer(layer);
+ //   }
+//  }
+//};
 
 const coordonne = document.querySelector('itinerary-component');
 
@@ -48,29 +59,52 @@ coordonne.addEventListener('coordonne-selected', (event) => {
   }
 });
 
-//to do si on veut ameliorer et mettre pls station mettre une liste de station et pas debut/fin afficcher les ping associer 
-document.addEventListener('bestBikeItineray',(event)=> {
-    //je recupere mes donner comme je le souhaite sans les avoir parser avant car déja mis dedans ce que j'avais besoin
-    const {itinerary} = event.detail || {};
-    //mes trois itineraire pied/velo/pied 
-    const routes = itinerary.itineraries;
-    //mtn que j'ai mes routes je veux afficher mes stations de vélo avec des points en plus de mes points de départ et d'arriver
-    console.log("je vais afficher les ping des satation")
-    const bikeStartStationLat = itinerary.startStation.lat ;
-    const bikeStartStationLon = itinerary.startStation.lon ;
-    const bikeEndStationLat = itinerary.endStation.lat ;
-    const bikeEndStationLon = itinerary.endStation.lon ;
-    //mtn on les affiches 
-    const startBikeStationPing = L.marker(bikeStartStationLat,bikeStartStationLon).addTo(map) ;
-    const endbikeStationPing = L.marker(bikeEndStationLat,bikeEndStationLon).addTo(map) ;
-    //et mtn on affiche les itineraires 
-    if(Array.isArray(routes)){
-      console.log("je vais afficher les routes mtn")
-      for(route in routes){
-        //recupere mon element en position 0 car la qu'est la geometrie
-        const first = Array.isArray(route) ? route[0] : route ;
-        const geometry = first.geometry || first ;
-        L.geoJSON(geometry).addTo(map);
+//to do probleme avec l'affichage des routes on a bien les ping si velo mais besoin de restart pour afficher les elements après ca s'affiche plus 
+document.addEventListener('bestBikeItinerary',(event)=> {
+    const { itinerary } = event.detail || {};
+    if (!itinerary) {
+      console.warn('bestBikeItinerary reçu sans contenu', event.detail);
+      return;
+    }
+    console.log("bien arriver ici ", itinerary);
+    // Nettoie les anciennes couches spécifiques au vélo
+
+
+    //if (routeLayer) {
+    //  map.removeLayer(routeLayer);
+    //  routeLayer = undefined;
+    //}
+    //clearLayers(bikeStationMarkers);
+    //clearLayers(bikeRouteLayers);
+
+    const startStation = itinerary?.stationCoordinate?.startStation;
+    const endStation = itinerary?.stationCoordinate?.endStation;
+    const itineraries = itinerary?.itineraries;
+
+    
+    console.log("element un a un ",startStation,endStation,itineraries);
+    // Ajoute les marqueurs des stations vélo
+    if (startStation?.lat != null && startStation?.lon != null) {
+      bikeStationMarkers.push(L.marker([startStation.lat, startStation.lon]).addTo(map));
+    }
+    if (endStation?.lat != null && endStation?.lon != null) {
+      bikeStationMarkers.push(L.marker([endStation.lat, endStation.lon]).addTo(map));
+    }
+
+    // Affiche les trois route (pied -> vélo -> pied)
+    if (Array.isArray(itineraries)) {
+      for (const segment of itineraries) {
+        const item = Array.isArray(segment) ? segment[0] : segment;
+        if (!item) continue;
+        let geometry = item.routes[0].geometry ?? item;
+        if (typeof geometry === 'string') {
+          try { geometry = JSON.parse(geometry); }
+          catch (e) { console.warn('GeoJSON de segment invalide', segment, e); continue; }
+        }
+        if (geometry?.type && geometry?.coordinates) {
+          console.log("itineraire a afficher",geometry);
+          console.log("le truc geo ",L.geoJSON(geometry).addTo(map));
+        }
       }
     }
 });
@@ -78,16 +112,16 @@ document.addEventListener('bestBikeItineray',(event)=> {
 
 document.addEventListener('Itinerary',(event) => {
   // je recupere que une route et je prend la geometry qui est un ensemble de point qui mis dans Geojson me fait un itinineraire 
-    const { route } = event.detail || {};
-    const first = Array.isArray(route) ? route[0] : route;
-    const geoCoordinate = route.geometry;
+    const { itinerary } = event.detail || {};
+    console.log("a pied recu", itinerary);
+    const first = Array.isArray(itinerary.itineraries) ? itinerary.itineraries[0] : itinerary.itineraries;
     if (!first) { console.warn('Itinerary reçu sans route', event.detail); return; }
-    const geometry = first.geometry || first;
-    console.log("rooute sur la map",geoCoordinate)
+    const geometry = first.routes[0].geometry || first;
     // Remplacer l'ancien itinéraire par le nouveau, si présent
     if (routeLayer) {
       map.removeLayer(routeLayer);
     }
+    console.log("route a pied a afficher ",geometry);
     routeLayer = L.geoJSON(geometry).addTo(map);
 });
 

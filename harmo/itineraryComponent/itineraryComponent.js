@@ -47,12 +47,12 @@ class ItineraryComponent extends HTMLElement {
                     const departCoordinateParse = String(departCoordinate).split(',');
                     const arrivalCoordinateParse = String(arrivalCoordinate).split(',');       
                     console.log("Parsed"+departCoordinateParse+"end"+arrivalCoordinateParse);
-                    route = await this.getRoute(departCoordinateParse[1],departCoordinateParse[0],arrivalCoordinateParse[1],arrivalCoordinateParse[0]);
+                    //route = await this.getRoute(departCoordinateParse[1],departCoordinateParse[0],arrivalCoordinateParse[1],arrivalCoordinateParse[0]);
                     const routeWithBike = await this.getBestRoute(departCoordinateParse[1],departCoordinateParse[0],arrivalCoordinateParse[1],arrivalCoordinateParse[0]);
-                    console.log('route with bike', routeWithBike);
-                    console.log(route);
+                    //console.log('route with bike', routeWithBike);
+                    //console.log(route);
                     // Affiche une étape à la fois avec navigation
-                    this.renderSteps(route);
+                   // this.renderSteps(route);
                 }
             });
 
@@ -110,16 +110,32 @@ class ItineraryComponent extends HTMLElement {
         }
         const data = await response.json();
         console.log('mes data',data,typeof data);
-        const payload = typeof data === 'string' ? JSON.parse(data) : data;
+        let raw = data?.BestItineraryResult
+            ?? data?.bestItinerary
+            ?? data;
+        try {
+            if (typeof raw === 'string') raw = JSON.parse(raw);
+        } catch (e) {
+            console.warn('Impossible de parser bestItinerary', e, raw);
+            return;
+        }
+        const payload = raw;
         const methode = payload?.methode;
         console.log("je vais me deplacer a ", methode)
-        if(methode === 'withBike'){
+        if(methode === "withBike"){
             this.dispatchEvent(new CustomEvent('bestBikeItinerary',{
-                detail : {payload},
+                detail : { itinerary: payload },
                 composed: true,
                 bubbles: true 
             }));
+        }else{
+            this.dispatchEvent(new CustomEvent('Itinerary',{
+                detail : {itinerary: payload},
+                composed: true ,
+                bubbles: true 
+            }));
         }
+
         }
 
 

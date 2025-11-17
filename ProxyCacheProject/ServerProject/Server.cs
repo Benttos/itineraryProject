@@ -22,14 +22,14 @@ namespace ServerProject
         private const double WALKING_SPEED_MPS = 5.0 / 3.6;   // 5 km/h
         private const double BIKING_SPEED_MPS = 15.0 / 3.6;   // 15 km/h
 
-        public string GetData(string link, string key)
+        private string GetData(string link, string key)
         {
             WebOperationContext.Current.OutgoingResponse.Headers.Add("Access-Control-Allow-Origin", "*");
             CompositeType element = new CompositeType(link, "Contract");
             return client.LookForData(link, "Contract");
         }
 
-        public string GetStationOfcity(string city)
+        private string GetStationOfcity(string city)
         {
             string link = "https://api.jcdecaux.com/vls/v3/stations?contract=" + city + "&apiKey=" + apiKey;
             string type = "Station";
@@ -60,7 +60,7 @@ namespace ServerProject
             }
         }
 
-        public string GetContract()
+        private string GetContract()
         {
             AddCorsheader();
             string link = "https://api.jcdecaux.com/vls/v3/contracts?apiKey=" + apiKey;
@@ -68,114 +68,9 @@ namespace ServerProject
             return client.LookForData(link, type);
         }
 
-        private List<string> GetCityNameAndCorrdonate()
-        {
-            string allContract = GetContract();
-            var parseContract = JArray.Parse(allContract);
-            var city = parseContract;
-            List<string> names = new List<string>();
-
-            return names;
-        }
-
-        public string neareastCityWithContract(string lat, string lon)
-        {
-            if (!double.TryParse(lat, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var targetLat) ||
-                !double.TryParse(lon, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out var targetLon))
-            {
-                throw new WebFaultException<string>("Invalid coordinates format. Use dot as decimal separator (ex: 48.859).", System.Net.HttpStatusCode.BadRequest);
-            }
-
-            string contractsJson = GetContract();
-            JArray contracts;
-            try
-            {
-                contracts = JArray.Parse(contractsJson);
-            }
-            catch
-            {
-                throw new WebFaultException<string>("Failed to parse contracts from JCDecaux API.", System.Net.HttpStatusCode.InternalServerError);
-            }
-
-            string bestContract = null;
-            double bestDistanceMeters = double.MaxValue;
-            JObject bestStation = null;
-
-            foreach (var contractToken in contracts)
-            {
-                var contractName = (string)contractToken["name"];
-                if (string.IsNullOrWhiteSpace(contractName))
-                    continue;
-
-                // Récupère toutes les stations pour le contract
-                string stationsLink = "https://api.jcdecaux.com/vls/v3/stations?contract=" + contractName + "&apiKey=" + apiKey;
-                string stationsJson;
-                try
-                {
-                    stationsJson = client.LookForData(stationsLink, "Station");
-                }
-                catch
-                {
-                    continue;
-                }
-
-                JArray stations;
-                try
-                {
-                    stations = JArray.Parse(stationsJson);
-                }
-                catch
-                {
-                    continue;
-                }
-
-                foreach (var station in stations)
-                {
-                    var pos = station["position"];
-                    if (pos == null)
-                        continue;
-
-                    double sLat = 0.0, sLon = 0.0;
-                    bool parsed = false;
-
-                    var latToken = pos["lat"] ?? pos["latitude"];
-                    var lonToken = pos["lng"] ?? pos["lon"] ?? pos["longitude"];
-                    if (latToken != null && lonToken != null)
-                    {
-                        parsed = double.TryParse(latToken.ToString(), NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out sLat)
-                                 && double.TryParse(lonToken.ToString(), NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out sLon);
-                    }
-
-                    if (!parsed)
-                        continue;
-
-                    double dist = HaversineDistanceMeters(targetLat, targetLon, sLat, sLon);
-                    if (dist < bestDistanceMeters)
-                    {
-                        bestDistanceMeters = dist;
-                        bestContract = contractName;
-                        bestStation = station as JObject;
-                    }
-                }
-            }
-
-            if (bestContract == null)
-            {
-                return new JObject { ["error"] = "No stations found for any contract." }.ToString();
-            }
-
-            var result = new JObject
-            {
-                ["contract"] = bestContract,
-                ["distanceMeters"] = Math.Round(bestDistanceMeters, 1),
-                ["station"] = bestStation ?? new JObject()
-            };
-
-            return result.ToString();
-        }
 
 
-        public string neareastCityWithContract2(string lat, string lon)
+        private string neareastCityWithContract2(string lat, string lon)
         {
             var contractsJson = GetContract();
             var contracts = JArray.Parse(contractsJson);
@@ -193,7 +88,7 @@ namespace ServerProject
                 if (contract == null) continue;
                 var contractName = (string)contract["name"];
                 (double contractLat,double contractLon) = getCoordinateOfCity(contractName) ;
-                if (contractLat == null || contractLon == null) continue;
+                if (contractLat == -1 || contractLon == -1) continue;
                 double distance = HaversineDistanceMeters(parsedLat, parsedLon, contractLat, contractLon);
                 if (distance < nearestDistance) {
                     nearestDistance = distance;
@@ -226,7 +121,7 @@ namespace ServerProject
                 //dans cette ville on cherche la station la plus proche
                 var stations = JArray.Parse(stationJson);
 
-                // Parse user coords using InvariantCulture
+                // parse les coo
                 if (!double.TryParse(Lat, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out double userLat) ||
                     !double.TryParse(Lon, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out double userLon))
                 {
@@ -242,9 +137,8 @@ namespace ServerProject
                     var pos = station["position"];
                     if (pos == null) continue;
 
-                    // changement de nom des clés possibles pour invariant au cas ou 
-                    double stationLat = pos["lat"].Value<double>();
-                    double stationLon = pos["lng"].Value<double>();
+                    double stationLat = pos["latitude"].Value<double>();
+                    double stationLon = pos["longitude"].Value<double>();
 
                     double distance = HaversineDistanceMeters(userLat, userLon, stationLat, stationLon);
                     if (distance < minDistance)
@@ -264,14 +158,22 @@ namespace ServerProject
 
         private (double,double) getCoordinateOfCity(string city)
         {
-            string link = "https://api-adresse.data.gouv.fr/search/?q=$"+city+"&limit=1";
+            string link = "https://api-adresse.data.gouv.fr/search/?q="+city+"&limit=1";
             CompositeType element = new CompositeType(link, "City");
             string result = client.LookForData(link, "City");
-            var parsedResult = JObject.Parse(result);
-            (double lat,double lon ) = parsedResult["features"]?[0]?["geometry"]?["coordinates"] != null ?
-                (parsedResult["features"][0]["geometry"]["coordinates"][1].Value<double>(),
-                 parsedResult["features"][0]["geometry"]["coordinates"][0].Value<double>()) : (-1, -1);
-            return (lat,lon);
+            try
+            {
+                var parsedResult = result != null ? JObject.Parse(result) : null;
+                (double lat, double lon) = parsedResult["features"]?[0]?["geometry"]?["coordinates"] != null ?
+                    (parsedResult["features"][0]["geometry"]["coordinates"][1].Value<double>(),
+                     parsedResult["features"][0]["geometry"]["coordinates"][0].Value<double>()) : (-1, -1);
+                return (lat, lon);
+
+            }
+            catch 
+            {
+                return (-1, -1);
+            }
         }
 
         public string BestItinerary(string startLat, string startLon, string endLat, string endLon)
@@ -353,10 +255,10 @@ namespace ServerProject
                         };
                         return result.ToString();
                     }
-                }else
-                {
-                    return "there a no walk and bike itinireraries available ";
-                }
+            }else
+            {
+                return "there a no walk and bike itinireraries available ";
+            }
             }
             catch (Exception ex)
             {
@@ -381,24 +283,6 @@ namespace ServerProject
         }
 
 
-        // Réponse au préflight OPTIONS (pour getItinerary)
-        public void OptionsGetItinerary()
-        {
-            var resp = WebOperationContext.Current.OutgoingResponse;
-            resp.StatusCode = System.Net.HttpStatusCode.OK;
-            resp.Headers.Add("Access-Control-Allow-Origin", "*");
-            resp.Headers.Add("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-            resp.Headers.Add("Access-Control-Allow-Headers", "Content-Type,Accept");
-        }
-
-        // Réponse au préflight OPTIONS (pour bestItinerary)
-        public void OptionsBestItinerary()
-        {
-            var headers = WebOperationContext.Current.OutgoingResponse.Headers;
-            headers.Set("Access-Control-Allow-Origin", "*");
-            headers.Set("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-            headers.Set("Access-Control-Allow-Headers", "Content-Type,Accept");
-        }
 
         private void AddCorsheader()
         {
