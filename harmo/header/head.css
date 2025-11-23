@@ -32,7 +32,9 @@ header{
     grid-row: 1;
     display: flex;
     justify-content: center;
+    align-items: center;
     border-bottom: 2px solid black;
+    position: relative;
 }
 
 
@@ -46,6 +48,57 @@ a:hover{
     color: gray;
     text-decoration: underline;
     cursor: pointer;
+}
+
+.login-link{
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    background: none;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.login-link:hover{
+    color: gray;
+}
+
+.overlay{
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.overlay.hidden{
+    display: none;
+}
+
+.overlay-content{
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    min-width: 260px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.overlay-content input{
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.overlay-actions{
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
 }
 
 

@@ -33,6 +33,10 @@ namespace ServerProject
         [WebInvoke(Method = "GET", UriTemplate = "/neareastStationInCity?city={city}&lat={Lat}&lon={Lon}", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]
         string neareastStationInCity(string city, string Lat, string Lon);
 
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "/getUserInfo?username={username}", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]
+        string GetUserInfo(string username);
+
     }
 
     // Utilisez un contrat de données comme indiqué dans l'exemple ci-après pour ajouter les types composites aux opérations de service.

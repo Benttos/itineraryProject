@@ -86,14 +86,14 @@ const drawGeometry = (geometry) => {
   return layer;
 };
 
-//const clearLayers = (layers) => {
-//  while (layers.length) {
-//    const layer = layers.pop();
-//    if (layer) {
-//      map.removeLayer(layer);
- //   }
-//  }
-//};
+const clearLayers = (layers = []) => {
+  while (layers.length) {
+    const layer = layers.pop();
+    if (layer) {
+      map.removeLayer(layer);
+    }
+  }
+};
 
 const coordonne = document.querySelector('itinerary-component');
 
@@ -106,6 +106,8 @@ coordonne.addEventListener('coordonne-selected', (event) => {
       map.removeLayer(routeLayer);
       routeLayer = undefined;
     }
+    clearLayers(bikeRouteLayers);
+    clearLayers(bikeStationMarkers);
 
     if(position === "depart"){
       if (DepartPingmarker) {
@@ -162,15 +164,19 @@ document.addEventListener('bestBikeItinerary',(event)=> {
 
     // Affiche les trois route (pied -> vélo -> pied)
     if (Array.isArray(itineraries)) {
-      for (const segment of itineraries) {
+      itineraries.forEach((segment, idx) => {
         const geometry = normalizeGeoJSON(segment);
         if (!geometry) {
           console.warn('GeoJSON de segment introuvable', segment);
-          continue;
+          return;
         }
-        console.log("itineraire a afficher",geometry);
-        console.log("le truc geo ",L.geoJSON(geometry).addTo(map));
-      }
+        // Segments 0 et dernier = à pied (bleu), segment du milieu = vélo (orange)
+        const isBikeLeg = idx === 1 && itineraries.length >= 3;
+        const color = isBikeLeg ? '#e67e22' : 'blue';
+        const layer = L.geoJSON(geometry, { style: { color, weight: 4 } }).addTo(map);
+        bikeRouteLayers.push(layer);
+        console.log("le truc geo ", layer);
+      });
     }
 });
 

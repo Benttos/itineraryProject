@@ -4,10 +4,12 @@ using ServerProject.ProxyReference;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Runtime.Remoting.Messaging;
 using System.ServiceModel;
 using System.ServiceModel.Web;
+using System.Text.RegularExpressions;
 
 namespace ServerProject
 {
@@ -22,6 +24,7 @@ namespace ServerProject
         // vitesses de repli (m/s)
         private const double WALKING_SPEED_MPS = 5.0 / 3.6;   // 5 km/h
         private const double BIKING_SPEED_MPS = 15.0 / 3.6;   // 15 km/h
+        private const string jsonPath = @"C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\JsonUser.txt";
 
         private string GetData(string link, string key)
         {
@@ -395,6 +398,62 @@ namespace ServerProject
             return deg * (Math.PI / 180.0);
         }
 
+        public string GetUserInfo(string username)
+        {
+            AddCorsheader();
+            try
+            {
+                string filePath = jsonPath;
+                if (!File.Exists(filePath))
+                {
+                    var errNotFound = new JObject { ["error"] = "file_not_found", ["message"] = $"JsonUser.txt introuvable ({filePath})" };
+                    return errNotFound.ToString();
+                }
+
+                string json = File.ReadAllText(filePath);
+
+                JObject root;
+                try
+                {
+                    root = JObject.Parse(json);
+                }
+                catch
+                {
+                    // Tentative de correction simple pour virgules finales invalides
+                    string fixedJson = Regex.Replace(json, ",\\s*([}\\]])", "$1");
+                    root = JObject.Parse(fixedJson);
+                }
+
+                var users = root["users"] as JArray;
+                if (users == null)
+                {
+                    var errFormat = new JObject { ["error"] = "invalid_format", ["message"] = "Champ 'users' absent ou non valide dans le fichier JSON." };
+                    return errFormat.ToString();
+                }
+
+                var userToken = users.FirstOrDefault(t => string.Equals((string)t["username"], username, StringComparison.OrdinalIgnoreCase));
+                if (userToken == null)
+                {
+                    var errUser = new JObject { ["error"] = "not_found", ["message"] = $"Utilisateur '{username}' introuvable." };
+                    return errUser.ToString();
+                }
+
+                return ((JObject)userToken).ToString();
+            }
+            catch (Exception ex)
+            {
+                var err = new JObject { ["error"] = "internal_exception", ["message"] = ex.Message };
+                return err.ToString();
+            }
+        }
+
+
+
+
+
+
+
 
     }
+
 }

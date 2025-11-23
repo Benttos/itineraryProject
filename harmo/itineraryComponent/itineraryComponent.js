@@ -10,22 +10,14 @@ class ItineraryComponent extends HTMLElement {
             .querySelector('template').content;
             this.shadowRoot.appendChild(template.cloneNode(true));
 
-            const departValue = shadowRoot.getElementById('departInput').value;
-            const arriveeValue = shadowRoot.getElementById('arriveeInput').value;
-
-            const liDepart = document.createElement('li');
-            const departBtn = shadowRoot.getElementById('departBtn');
-            
-
-
-            const ulArrivee = shadowRoot.getElementById('arrivalsList');
-            const arriveeBtn = shadowRoot.getElementById('arriveeBtn');
-
             const itineraryButton = shadowRoot.getElementById('itinerayButton');
             const prevBtn = shadowRoot.getElementById('prevStepBtn');
             const nextBtn = shadowRoot.getElementById('nextStepBtn');
+            const routeSelect = shadowRoot.getElementById('routeSelect');
             this.currentStepIndex = -1;
+            this.currentRouteIndex = -1;
             this.steps = [];
+            this.routes = [];
             const updateNav = () => {
                 if (!prevBtn || !nextBtn) return;
                 prevBtn.disabled = this.currentStepIndex <= 0;
@@ -47,12 +39,8 @@ class ItineraryComponent extends HTMLElement {
                     const departCoordinateParse = String(departCoordinate).split(',');
                     const arrivalCoordinateParse = String(arrivalCoordinate).split(',');       
                     console.log("Parsed"+departCoordinateParse+"end"+arrivalCoordinateParse);
-                    //route = await this.getRoute(departCoordinateParse[1],departCoordinateParse[0],arrivalCoordinateParse[1],arrivalCoordinateParse[0]);
-                    const routeWithBike = await this.getBestRoute(departCoordinateParse[1],departCoordinateParse[0],arrivalCoordinateParse[1],arrivalCoordinateParse[0]);
-                    //console.log('route with bike', routeWithBike);
-                    //console.log(route);
-                    // Affiche une étape à la fois avec navigation
-                   // this.renderSteps(route);
+                    const payload = await this.getBestRoute(departCoordinateParse[1],departCoordinateParse[0],arrivalCoordinateParse[1],arrivalCoordinateParse[0]);
+                    this.renderStepsFromPayload(payload);
                 }
             });
 
@@ -136,6 +124,7 @@ class ItineraryComponent extends HTMLElement {
             }));
         }
 
+        return payload;
         }
 
 
@@ -210,7 +199,7 @@ class ItineraryComponent extends HTMLElement {
     }
 
     buildInstruction(step) {
-        const instr = step?.maneuver?.instruction;
+        const instr = step?.instruction || step?.maneuver?.instruction;
         if (instr) return instr;
         const type = step?.maneuver?.type;
         const mod = step?.maneuver?.modifier;
@@ -223,6 +212,13 @@ class ItineraryComponent extends HTMLElement {
         // Initialise steps et affiche la première
         const leg = route?.legs?.[0];
         const steps = Array.isArray(leg?.steps) ? leg.steps : [];
+        this.steps = steps;
+        this.currentStepIndex = steps.length ? 0 : -1;
+        this.renderCurrentStep();
+    }
+
+    renderStepsFromPayload(payload) {
+        const steps = this.extractSteps(payload);
         this.steps = steps;
         this.currentStepIndex = steps.length ? 0 : -1;
         this.renderCurrentStep();
@@ -250,12 +246,61 @@ class ItineraryComponent extends HTMLElement {
             return;
         }
         const step = this.steps[this.currentStepIndex];
-        const text = this.buildInstruction(step) || (step?.name ? `Suivre ${step.name}` : 'Continuer');
+        const mode = step?._mode === 'bike' ? '[Velo] ' : (step?._mode === 'walk' ? '[A pied] ' : '');
+        const text = mode + (this.buildInstruction(step) || (step?.name ? `Suivre ${step.name}` : 'Continuer'));
         const dist = this.formatDistance(step?.distance);
-        cur.textContent = dist ? `${text} • ${dist}` : text;
+        cur.textContent = dist ? `${text} - ${dist}` : text;
         prog.textContent = `Etape ${this.currentStepIndex + 1}/${this.steps.length}`;
         if (prevBtn) prevBtn.disabled = this.currentStepIndex <= 0;
         if (nextBtn) nextBtn.disabled = this.currentStepIndex >= this.steps.length - 1;
+    }
+
+    extractStepsFromSegment(segment) {
+        if (!segment) return [];
+        const segs = segment?.segments;
+        if (Array.isArray(segs) && Array.isArray(segs[0]?.steps)) {
+            return segs.flatMap(s => s?.steps || []);
+        }
+        const propSegs = segment?.properties?.segments;
+        if (Array.isArray(propSegs) && Array.isArray(propSegs[0]?.steps)) {
+            return propSegs.flatMap(s => s?.steps || []);
+        }
+        const featSegs = segment?.features?.[0]?.properties?.segments;
+        if (Array.isArray(featSegs) && Array.isArray(featSegs[0]?.steps)) {
+            return featSegs.flatMap(s => s?.steps || []);
+        }
+        const legsSteps = segment?.legs?.[0]?.steps;
+        if (Array.isArray(legsSteps)) return legsSteps;
+        return [];
+    }
+
+    detectMode(segment, idx, total) {
+        const profile = (segment?.profile || segment?.mode || segment?.properties?.profile || segment?.properties?.mode || '').toLowerCase();
+        if (profile.includes('bike') || profile.includes('cycle')) return 'bike';
+        if (profile.includes('foot') || profile.includes('walk')) return 'walk';
+        if (total >= 3 && idx === 1) return 'bike';
+        return 'walk';
+    }
+
+    extractSegments(payload) {
+        if (!payload) return [];
+        if (Array.isArray(payload?.itineraries)) return payload.itineraries;
+        if (payload?.itineraries) return [payload.itineraries];
+        if (Array.isArray(payload?.routes)) return payload.routes;
+        if (payload?.route) return [payload.route];
+        if (Array.isArray(payload)) return payload;
+        return [payload];
+    }
+
+    extractSteps(payload) {
+        const segments = this.extractSegments(payload);
+        const all = [];
+        segments.forEach((segment, idx) => {
+            const mode = this.detectMode(segment, idx, segments.length);
+            const steps = this.extractStepsFromSegment(segment);
+            steps.forEach(s => all.push({ ...s, _mode: mode }));
+        });
+        return all;
     }
 
     async getCity(name,position) { 
@@ -300,3 +345,4 @@ class ItineraryComponent extends HTMLElement {
 
 
 customElements.define('itinerary-component', ItineraryComponent);
+ 

@@ -7,6 +7,7 @@
             <a href="../itinerary/itineraryPage.html">itinerary</a>
             <a href="../credit/creditPage.html">credit</a>
         </nav>
+        <button id="loginLink" class="login-link">Connexion</button>
         <div id="burger_menu" class="close"> 
             <div class="line1"></div>
             <div class="line2"></div>
@@ -28,6 +29,16 @@
                     <li>item 3</li>
                     <li>item 4</li>
                 </ul>
+            </div>
+        </div>
+        <div id="loginOverlay" class="overlay hidden">
+            <div class="overlay-content">
+                <h3>Connexion</h3>
+                <input type="text" id="usernameInput" placeholder="Nom d'utilisateur">
+                <div class="overlay-actions">
+                    <button id="loginCancel">Annuler</button>
+                    <button id="loginSubmit">Valider</button>
+                </div>
             </div>
         </div>
 </template>
