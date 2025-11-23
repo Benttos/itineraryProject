@@ -25,8 +25,13 @@ namespace ServerProject
         [WebInvoke(Method = "GET", UriTemplate = "/bestItinerary?fromLat={fromLat}&fromLon={fromLon}&toLat={toLat}&toLon={toLon}", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]
         string BestItinerary(string fromLat, string fromLon, string toLat, string toLon);
 
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "/neareastCityWithContract1?lat={lat}&lon={lon}", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]
+        string neareastCityWithContract2(string lat, string lon);
 
-
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "/neareastStationInCity?city={city}&lat={Lat}&lon={Lon}", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]
+        string neareastStationInCity(string city, string Lat, string Lon);
 
     }
 
@@ -37,7 +42,7 @@ namespace ServerProject
     {
         string link = "http";
         string type = "Contract";
-
+        
         // Constructeur sans paramètres requis pour la désérialisation WCF
         public CompositeType() { }
 

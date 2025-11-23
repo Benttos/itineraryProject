@@ -17,6 +17,75 @@ let routeLayer; // couche de l'itinéraire courant
 const bikeStationMarkers = [];
 const bikeRouteLayers = [];
 
+// Normalise OSM/GeoJSON segments to a Leaflet-friendly GeoJSON object
+const normalizeGeoJSON = (segment) => {
+  const parseMaybeJSON = (val) => {
+    if (typeof val === 'string') {
+      try { return JSON.parse(val); }
+      catch (e) { console.warn('GeoJSON parse failed', e, val); return null; }
+    }
+    return val;
+  };
+
+  const base = parseMaybeJSON(Array.isArray(segment) ? segment[0] : segment);
+  if (!base) return null;
+
+  // Geometry nested in a route list (even with OSM GeoJSON inside routes)
+  const embeddedGeometry = base?.routes?.[0]?.geometry ?? base?.route?.geometry;
+  if (embeddedGeometry) return parseMaybeJSON(embeddedGeometry);
+
+  // OSM/ORS FeatureCollection or Feature
+  if (base?.type === 'FeatureCollection' && Array.isArray(base.features)) return base;
+  if (base?.type === 'Feature' && base.geometry) return parseMaybeJSON(base);
+
+  // Feature-like object without explicit type
+  if (base?.features?.[0]?.geometry) {
+    const geom = parseMaybeJSON(base.features[0].geometry);
+    if (geom?.type && geom?.coordinates) {
+      return { type: 'Feature', geometry: geom, properties: base.features[0].properties ?? {} };
+    }
+  }
+
+  // Direct geometry fallback
+  const geometry = parseMaybeJSON(base.geometry ?? base);
+  if (geometry?.type && (geometry?.coordinates || geometry?.features)) return geometry;
+
+  return null;
+};
+
+// Convert LineString coordinates to Leaflet LatLng tuples with a basic lon/lat heuristic
+const lineStringToLatLngs = (coords = []) => {
+  return coords.map((pair) => {
+    const [a, b] = pair;
+    const looksLikeLatLon = Math.abs(a) <= 90 && Math.abs(b) <= 180;
+    const looksLikeLonLat = Math.abs(a) <= 180 && Math.abs(b) <= 90;
+    if (looksLikeLatLon) return [a, b];   // already [lat, lon]
+    if (looksLikeLonLat) return [b, a];   // swap from [lon, lat]
+    return [b, a]; // fallback swap
+  });
+};
+
+// Draw geometry with fallbacks: GeoJSON -> polyline(LineString) -> FeatureCollection first LineString
+const drawGeometry = (geometry) => {
+  if (!geometry) return null;
+  let layer = L.geoJSON(geometry);
+  if (layer?.getLayers && layer.getLayers().length === 0 && geometry.type === 'LineString') {
+    const latlngs = lineStringToLatLngs(geometry.coordinates);
+    layer = L.polyline(latlngs, { color: 'blue', weight: 4 });
+    console.warn('GeoJSON vide, utilisation du polyline fallback', latlngs.slice(0,3));
+  }
+  if (layer?.getLayers && layer.getLayers().length === 0 && geometry?.features?.length) {
+    const g = geometry.features[0]?.geometry;
+    if (g?.type === 'LineString') {
+      const latlngs = lineStringToLatLngs(g.coordinates);
+      layer = L.polyline(latlngs, { color: 'blue', weight: 4 });
+      console.warn('Fallback FeatureCollection -> polyline', latlngs.slice(0,3));
+    }
+  }
+  if (layer) layer.addTo(map);
+  return layer;
+};
+
 //const clearLayers = (layers) => {
 //  while (layers.length) {
 //    const layer = layers.pop();
@@ -94,17 +163,13 @@ document.addEventListener('bestBikeItinerary',(event)=> {
     // Affiche les trois route (pied -> vélo -> pied)
     if (Array.isArray(itineraries)) {
       for (const segment of itineraries) {
-        const item = Array.isArray(segment) ? segment[0] : segment;
-        if (!item) continue;
-        let geometry = item.routes[0].geometry ?? item;
-        if (typeof geometry === 'string') {
-          try { geometry = JSON.parse(geometry); }
-          catch (e) { console.warn('GeoJSON de segment invalide', segment, e); continue; }
+        const geometry = normalizeGeoJSON(segment);
+        if (!geometry) {
+          console.warn('GeoJSON de segment introuvable', segment);
+          continue;
         }
-        if (geometry?.type && geometry?.coordinates) {
-          console.log("itineraire a afficher",geometry);
-          console.log("le truc geo ",L.geoJSON(geometry).addTo(map));
-        }
+        console.log("itineraire a afficher",geometry);
+        console.log("le truc geo ",L.geoJSON(geometry).addTo(map));
       }
     }
 });
@@ -114,15 +179,25 @@ document.addEventListener('Itinerary',(event) => {
   // je recupere que une route et je prend la geometry qui est un ensemble de point qui mis dans Geojson me fait un itinineraire 
     const { itinerary } = event.detail || {};
     console.log("a pied recu", itinerary);
-    const first = Array.isArray(itinerary.itineraries) ? itinerary.itineraries[0] : itinerary.itineraries;
+    const first = Array.isArray(itinerary?.itineraries)
+      ? itinerary.itineraries[0]
+      : (itinerary?.itineraries ?? itinerary);
     if (!first) { console.warn('Itinerary reçu sans route', event.detail); return; }
-    const geometry = first.routes[0].geometry || first;
+    const geometry = normalizeGeoJSON(first);
+    if (!geometry) { console.warn('GeoJSON introuvable pour Itinerary', first); return; }
     // Remplacer l'ancien itinéraire par le nouveau, si présent
     if (routeLayer) {
       map.removeLayer(routeLayer);
     }
     console.log("route a pied a afficher ",geometry);
-    routeLayer = L.geoJSON(geometry).addTo(map);
+    routeLayer = drawGeometry(geometry);
+    if (routeLayer && routeLayer.getBounds) {
+      map.fitBounds(routeLayer.getBounds(), { padding: [20, 20] });
+    }
+    if (routeLayer && routeLayer.getLatLngs) {
+      const preview = routeLayer.getLatLngs();
+      console.log('points (aperçu) : ', preview?.[0]?.[0] ?? preview?.[0]);
+    }
 });
 
 

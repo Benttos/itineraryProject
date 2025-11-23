@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "Nouveau profil",
+    "Projects": [
+      {
+        "Path": "ProxyCacheProject\\ProxyCacheProject.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "ServerProject\\ServerProject.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]

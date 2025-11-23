@@ -85,7 +85,7 @@ namespace ProxyCacheProject
         {
 
             var asyncResult = _httpClient.GetStringAsync(elementName.Link);
-            if(!asyncResult.Wait(5000))
+            if(!asyncResult.Wait(50000))
             {
                 return "Timeout calling API for "+elementName.Type;
             }
