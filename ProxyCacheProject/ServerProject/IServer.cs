@@ -37,6 +37,14 @@ namespace ServerProject
         [WebInvoke(Method = "GET", UriTemplate = "/getUserInfo?username={username}", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]
         string GetUserInfo(string username);
 
+        [OperationContract]
+        [WebInvoke(Method = "GET",UriTemplate = "/getAllUserInfo", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]
+        string GetAllUserInfo();
+
+
+        [OperationContract]
+        [WebInvoke(Method = "GET", UriTemplate = "/addTokensToUser?username={username}&tokensToAdd={tokensToAdd}", ResponseFormat = WebMessageFormat.Json, BodyStyle = WebMessageBodyStyle.Wrapped)]
+        string addTokensToUser(string username, int tokensToAdd);
     }
 
     // Utilisez un contrat de données comme indiqué dans l'exemple ci-après pour ajouter les types composites aux opérations de service.

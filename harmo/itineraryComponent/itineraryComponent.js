@@ -2,6 +2,7 @@ class ItineraryComponent extends HTMLElement {
     constructor() {
         super();
         let shadowRoot = this.attachShadow({ mode: 'open' });
+        this.loggedUsername = null;
 
         fetch('/itineraryComponent/itineraryComponent.html')
         .then(response => response.text())
@@ -13,18 +14,34 @@ class ItineraryComponent extends HTMLElement {
             const itineraryButton = shadowRoot.getElementById('itinerayButton');
             const prevBtn = shadowRoot.getElementById('prevStepBtn');
             const nextBtn = shadowRoot.getElementById('nextStepBtn');
+            const finishBtn = shadowRoot.getElementById('finishStepBtn');
             const routeSelect = shadowRoot.getElementById('routeSelect');
             this.currentStepIndex = -1;
             this.currentRouteIndex = -1;
             this.steps = [];
             this.routes = [];
-            const updateNav = () => {
-                if (!prevBtn || !nextBtn) return;
-                prevBtn.disabled = this.currentStepIndex <= 0;
-                nextBtn.disabled = this.currentStepIndex < 0 || this.currentStepIndex >= this.steps.length - 1;
+            if (prevBtn) prevBtn.addEventListener('click', () => { this.moveStep(-1); this.updateNavButtons(); });
+            if (nextBtn) nextBtn.addEventListener('click', () => { this.moveStep(1); this.updateNavButtons(); });
+            const handleLoginEvent = (event) => {
+                this.loggedUsername = event?.detail?.username || null;
+                this.updateNavButtons();
             };
-            if (prevBtn) prevBtn.addEventListener('click', () => { this.moveStep(-1); updateNav(); });
-            if (nextBtn) nextBtn.addEventListener('click', () => { this.moveStep(1); updateNav(); });
+            if (finishBtn) finishBtn.addEventListener('click', async () => {
+                if (!this.canFinish()) return;
+                const tokensToAdd = this.steps.length;
+                const url = `http://localhost:8733/Design_Time_Addresses/ServerProject/Server/addTokensToUser?username=${encodeURIComponent(this.loggedUsername)}&tokensToAdd=${tokensToAdd}`;
+                try {
+                    const res = await fetch(url);
+                    if (!res.ok) throw new Error('Reponse From addTokensToUser not ok');
+                    console.log('Tokens added', { username: this.loggedUsername, tokensToAdd });
+                } catch (e) {
+                    console.error('Echec ajout tokens', e);
+                }
+            });
+            window.addEventListener('user-login', handleLoginEvent);
+            document.addEventListener('user-login', handleLoginEvent);
+            this.addEventListener('user-login', handleLoginEvent);
+            this.updateNavButtons();
 
             let departCoordinate ;
             let arrivalCoordinate ;
@@ -186,10 +203,23 @@ class ItineraryComponent extends HTMLElement {
         }
         this.steps = [];
         this.currentStepIndex = -1;
+        this.updateNavButtons();
+    }
+
+    canFinish() {
+        return Array.isArray(this.steps)
+            && this.steps.length > 0
+            && this.currentStepIndex === this.steps.length - 1
+            && !!this.loggedUsername;
+    }
+
+    updateNavButtons() {
         const prevBtn = this.shadowRoot?.getElementById('prevStepBtn');
         const nextBtn = this.shadowRoot?.getElementById('nextStepBtn');
-        if (prevBtn) prevBtn.disabled = true;
-        if (nextBtn) nextBtn.disabled = true;
+        const finishBtn = this.shadowRoot?.getElementById('finishStepBtn');
+        if (prevBtn) prevBtn.disabled = this.currentStepIndex <= 0;
+        if (nextBtn) nextBtn.disabled = this.currentStepIndex < 0 || this.currentStepIndex >= this.steps.length - 1;
+        if (finishBtn) finishBtn.disabled = !this.canFinish();
     }
 
     formatDistance(meters) {
@@ -235,14 +265,11 @@ class ItineraryComponent extends HTMLElement {
     renderCurrentStep() {
         const cur = this.shadowRoot?.getElementById('currentStep');
         const prog = this.shadowRoot?.getElementById('stepProgress');
-        const prevBtn = this.shadowRoot?.getElementById('prevStepBtn');
-        const nextBtn = this.shadowRoot?.getElementById('nextStepBtn');
         if (!cur || !prog) return;
         if (this.currentStepIndex < 0) {
             cur.textContent = 'Aucune étape disponible.';
             prog.textContent = '';
-            if (prevBtn) prevBtn.disabled = true;
-            if (nextBtn) nextBtn.disabled = true;
+            this.updateNavButtons();
             return;
         }
         const step = this.steps[this.currentStepIndex];
@@ -251,8 +278,7 @@ class ItineraryComponent extends HTMLElement {
         const dist = this.formatDistance(step?.distance);
         cur.textContent = dist ? `${text} - ${dist}` : text;
         prog.textContent = `Etape ${this.currentStepIndex + 1}/${this.steps.length}`;
-        if (prevBtn) prevBtn.disabled = this.currentStepIndex <= 0;
-        if (nextBtn) nextBtn.disabled = this.currentStepIndex >= this.steps.length - 1;
+        this.updateNavButtons();
     }
 
     extractStepsFromSegment(segment) {

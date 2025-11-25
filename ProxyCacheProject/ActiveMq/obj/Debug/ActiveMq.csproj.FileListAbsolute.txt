@@ -1,0 +1,13 @@
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ActiveMq\obj\Debug\ActiveMq.csproj.AssemblyReference.cache
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ActiveMq\obj\Debug\ActiveMq.csproj.CoreCompileInputs.cache
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ActiveMq\bin\Debug\ActiveMq.dll.config
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ActiveMq\bin\Debug\ActiveMq.dll
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ActiveMq\bin\Debug\ActiveMq.pdb
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ActiveMq\bin\Debug\Apache.NMS.ActiveMQ.dll
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ActiveMq\bin\Debug\Apache.NMS.dll
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ActiveMq\bin\Debug\ICSharpCode.SharpZipLib.dll
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ActiveMq\bin\Debug\ICSharpCode.SharpZipLib.pdb
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ActiveMq\bin\Debug\ICSharpCode.SharpZipLib.xml
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ActiveMq\obj\Debug\ActiveMq.csproj.Up2Date
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ActiveMq\obj\Debug\ActiveMq.dll
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ActiveMq\obj\Debug\ActiveMq.pdb

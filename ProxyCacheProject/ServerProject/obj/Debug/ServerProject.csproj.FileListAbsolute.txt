@@ -31,3 +31,10 @@ C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProje
 C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ServerProject\obj\Debug\ServerPr.A886E461.Up2Date
 C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ServerProject\obj\Debug\ServerProject.dll
 C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ServerProject\obj\Debug\ServerProject.pdb
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ServerProject\bin\Debug\QueueServices.dll
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ServerProject\bin\Debug\Apache.NMS.dll
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ServerProject\bin\Debug\Apache.NMS.ActiveMQ.dll
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ServerProject\bin\Debug\ICSharpCode.SharpZipLib.dll
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ServerProject\bin\Debug\QueueServices.pdb
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ServerProject\bin\Debug\ICSharpCode.SharpZipLib.pdb
+C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\ServerProject\bin\Debug\ICSharpCode.SharpZipLib.xml

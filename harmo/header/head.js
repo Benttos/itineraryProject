@@ -2,6 +2,7 @@ class Head extends HTMLElement {
     constructor() {
         super();
         let shadowRoot = this.attachShadow({ mode: 'open' });
+        this.currentUser = null;
 
         fetch('../header/head.html')
         .then(response => response.text())
@@ -11,6 +12,7 @@ class Head extends HTMLElement {
             this.shadowRoot.appendChild(template.cloneNode(true));
             this.toggleMenu();
             this.initLogin();
+            this.initTokensUpdateListener();
         });
     }
 
@@ -64,6 +66,7 @@ class Head extends HTMLElement {
                 openBtn.textContent = `${label} biken`;
             }
         };
+        this._setButtonLabel = setButtonLabel;
         if (submitBtn) {
             submitBtn.addEventListener('click', async () => {
                 const username = input?.value?.trim();
@@ -86,6 +89,7 @@ class Head extends HTMLElement {
                     }
                     if (token !== undefined && token !== null && token !== '') {
                         setButtonLabel(token);
+                        this.currentUser = { username, token };
                         this.dispatchEvent(new CustomEvent('user-login', {
                             detail: { username, token },
                             composed: true,
@@ -109,6 +113,42 @@ class Head extends HTMLElement {
                 }
             });
         }
+    }
+
+    async refreshUserTokenFromServer(payload) {
+        const username = this.currentUser?.username;
+        if (!username) return;
+        if (payload?.username && payload.username !== username) return;
+        try {
+            const url = `http://localhost:8733/Design_Time_Addresses/ServerProject/Server/getUserInfo?username=${encodeURIComponent(username)}`;
+            const res = await fetch(url);
+            if (!res.ok) throw new Error('Réponse invalide du serveur');
+            const raw = await res.text();
+            let data;
+            try { data = JSON.parse(raw); } catch { data = raw; }
+            if (data?.GetUserInfoResult && typeof data.GetUserInfoResult === 'string') {
+                try { data = JSON.parse(data.GetUserInfoResult); } catch {}
+            }
+            let token = data?.token ?? data?.Token ?? data?.userToken ?? data;
+            if (typeof token === 'object') {
+                token = token?.token ?? token?.Token ?? token?.value;
+            }
+            if (token !== undefined && token !== null && token !== '') {
+                this.currentUser = { username, token };
+                this._setButtonLabel?.(token);
+            }
+        } catch (e) {
+            console.error('Echec refresh token', e);
+        }
+    }
+
+    initTokensUpdateListener() {
+        const handler = (event) => {
+            this.refreshUserTokenFromServer(event?.detail);
+        };
+        window.addEventListener('user-tokens-updated', handler);
+        document.addEventListener('user-tokens-updated', handler);
+        this.addEventListener('user-tokens-updated', handler);
     }
 
 }

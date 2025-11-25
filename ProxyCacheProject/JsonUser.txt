@@ -2,11 +2,11 @@
   "users": [
     {
       "username": "alice",
-      "token": 25
+      "token": 69
     },
     {
       "username": "bob",
-      "token": 34
+      "token": 55
     }
   ]
 }

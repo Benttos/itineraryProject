@@ -10,7 +10,7 @@ using System.Runtime.Remoting.Messaging;
 using System.ServiceModel;
 using System.ServiceModel.Web;
 using System.Text.RegularExpressions;
-
+using QueueService;
 namespace ServerProject
 {
     // REMARQUE : vous pouvez utiliser la commande Renommer du menu Refactoriser pour changer le nom de classe "Service1" à la fois dans le code et le fichier de configuration.
@@ -24,7 +24,9 @@ namespace ServerProject
         // vitesses de repli (m/s)
         private const double WALKING_SPEED_MPS = 5.0 / 3.6;   // 5 km/h
         private const double BIKING_SPEED_MPS = 15.0 / 3.6;   // 15 km/h
-        private const string jsonPath = @"C:\Users\karat\OneDrive\Bureau\Ecole_inge\middleware\itineraryProject\ProxyCacheProject\JsonUser.txt";
+        private const string jsonPath = @"C:\Users\karat\OneDrive\Bureau\Ecole_inge\si4\middle_ware\project\itineraryProject\ProxyCacheProject\JsonUser.txt";
+        private string currentTopUser = "";
+        private int currentTopTokkenUser = 0;
 
         private string GetData(string link, string key)
         {
@@ -167,7 +169,7 @@ namespace ServerProject
             return client.LookForData(link, "Itinerary");
         }
 
-        public string neareastStationInCity(string city,string Lat,string Lon)
+        public string neareastStationInCity(string city, string Lat, string Lon)
         {
             try
             {
@@ -223,9 +225,9 @@ namespace ServerProject
             }
         }
 
-        private (double,double) getCoordinateOfCity(string city)
+        private (double, double) getCoordinateOfCity(string city)
         {
-            string link = "https://api-adresse.data.gouv.fr/search/?q="+city+"&limit=1";
+            string link = "https://api-adresse.data.gouv.fr/search/?q=" + city + "&limit=1";
             CompositeType element = new CompositeType(link, "City");
             string result = client.LookForData(link, "City");
             try
@@ -237,7 +239,7 @@ namespace ServerProject
                 return (lat, lon);
 
             }
-            catch 
+            catch
             {
                 return (-1, -1);
             }
@@ -289,7 +291,7 @@ namespace ServerProject
                 double bestStationEndLat = endStationInfoToken["position"]?["lat"]?.Value<double>() ?? -1;
                 double bestStationEndLon = endStationInfoToken["position"]?["lon"]?.Value<double>() ?? -1;
 
-                if(checkStation(bestStationLat,bestStationLon) && checkStation(bestStationEndLat, bestStationEndLon) && pedestrianItinerary!=null){
+                if (checkStation(bestStationLat, bestStationLon) && checkStation(bestStationEndLat, bestStationEndLon) && pedestrianItinerary != null) {
                     string itineratyTobikeStartStation = GetPedestrianItinerary(startLat, startLon, bestStationLat.ToString(CultureInfo.InvariantCulture), bestStationLon.ToString(CultureInfo.InvariantCulture));
                     string itineratyBike = GetBikeItineray(bestStationLat.ToString(CultureInfo.InvariantCulture), bestStationLon.ToString(CultureInfo.InvariantCulture), bestStationEndLat.ToString(CultureInfo.InvariantCulture), bestStationEndLon.ToString(CultureInfo.InvariantCulture));
                     string itineraryFromEndStationToEnd = GetPedestrianItinerary(bestStationEndLat.ToString(CultureInfo.InvariantCulture), bestStationEndLon.ToString(CultureInfo.InvariantCulture), endLat, endLon);
@@ -301,7 +303,7 @@ namespace ServerProject
                     double fromBikeDuration = ExtractDurationFromJson(itineraryFromEndStationToEnd) ?? double.MaxValue;
 
                     double totalDuration = toBikeDuration + bikeDuration + fromBikeDuration;
-                    if(totalDuration < pedestrianDuration)
+                    if (totalDuration < pedestrianDuration)
                     {
                         var result = new JObject
                         {
@@ -329,7 +331,7 @@ namespace ServerProject
                             }
                         };
                         return result.ToString();
-                    }else
+                    } else
                     {
                         var result = new JObject
                         {
@@ -342,10 +344,10 @@ namespace ServerProject
                         };
                         return result.ToString();
                     }
-            }else
-            {
-                return "there a no walk and bike itinireraries available ";
-            }
+                } else
+                {
+                    return "there a no walk and bike itinireraries available ";
+                }
             }
             catch (Exception ex)
             {
@@ -360,9 +362,9 @@ namespace ServerProject
         }
 
 
-        private Boolean checkStation(double lat,double lon)
+        private Boolean checkStation(double lat, double lon)
         {
-            if (lat == -1 || lon == -1 || (lat == 0 && lon==0))
+            if (lat == -1 || lon == -1 || (lat == 0 && lon == 0))
             {
                 return false;
             }
@@ -398,6 +400,29 @@ namespace ServerProject
             return deg * (Math.PI / 180.0);
         }
 
+
+        public string GetAllUserInfo()
+        {
+            AddCorsheader();
+            try
+            {
+                string filePath = jsonPath;
+                if (!File.Exists(filePath))
+                {
+                    var errNotFound = new JObject { ["error"] = "file_not_found", ["message"] = $"JsonUser.txt introuvable ({filePath})" };
+                    return errNotFound.ToString();
+                }
+
+                string json = File.ReadAllText(filePath);
+                return json;
+            } catch (Exception ex)
+            {
+                var err = new JObject { ["error"] = "internal_exception", ["message"] = ex.Message };
+                return err.ToString();
+            }
+        }
+
+
         public string GetUserInfo(string username)
         {
             AddCorsheader();
@@ -425,18 +450,10 @@ namespace ServerProject
                 }
 
                 var users = root["users"] as JArray;
-                if (users == null)
-                {
-                    var errFormat = new JObject { ["error"] = "invalid_format", ["message"] = "Champ 'users' absent ou non valide dans le fichier JSON." };
-                    return errFormat.ToString();
-                }
+
 
                 var userToken = users.FirstOrDefault(t => string.Equals((string)t["username"], username, StringComparison.OrdinalIgnoreCase));
-                if (userToken == null)
-                {
-                    var errUser = new JObject { ["error"] = "not_found", ["message"] = $"Utilisateur '{username}' introuvable." };
-                    return errUser.ToString();
-                }
+
 
                 return ((JObject)userToken).ToString();
             }
@@ -448,11 +465,92 @@ namespace ServerProject
         }
 
 
+        private void checkClassement()
+        {
+            QueueProducer producer = new QueueProducer();
+            try
+            {
+                string filePath = jsonPath;
+                if (!File.Exists(filePath))
+                {
+                    var errNotFound = new JObject { ["error"] = "file_not_found", ["message"] = $"JsonUser.txt introuvable ({filePath})" };
+                    return;
+                }
+
+                string json = File.ReadAllText(filePath);
+
+                JObject root;
+                try
+                {
+                    root = JObject.Parse(json);
+                }
+                catch
+                {
+                    // Tentative de correction simple pour virgules finales invalides
+                    string fixedJson = Regex.Replace(json, ",\\s*([}\\]])", "$1");
+                    root = JObject.Parse(fixedJson);
+                }
+
+                var users = root["users"] as JArray;
+                foreach(var user in users)
+                {
+                    if ((int)user["token"] > currentTopTokkenUser)
+                    {
+                       
+                        currentTopTokkenUser = (int)user["token"];
+                        currentTopUser = (string)user["username"];
+                    }
+                }
+                producer.SendRankingChanged(currentTopUser);
 
 
 
 
+            }
+            catch (Exception ex)
+            {
+                var err = new JObject { ["error"] = "internal_exception", ["message"] = ex.Message };
+                return;
 
+            }
+        }
+
+        public string addTokensToUser(string username, int nbToken)
+        {
+            AddCorsheader();
+            JObject root;
+            var json = File.ReadAllText(jsonPath); 
+            try
+            {
+                root = JObject.Parse(json);
+            }
+            catch
+            {
+                // Tentative de correction simple pour virgules finales invalides
+                string fixedJson = Regex.Replace(jsonPath, ",\\s*([}\\]])", "$1");
+                root = JObject.Parse(fixedJson);
+            }
+            JArray users = (JArray)root["users"];
+
+            // Trouver le bon utilisateur et mettre à jour
+            foreach (var user in users)
+            {
+                if ((string)user["username"] == username)
+                {
+                    user["token"] = (int)user["token"] + nbToken;
+                    break;
+                }
+            }
+
+            File.WriteAllText(jsonPath, root.ToString());
+
+            QueueProducer producer = new QueueProducer();
+            producer.SendTokensUpdated(username, nbToken);
+            checkClassement();
+
+            return "token ajouter";
+        }
+  
 
     }
 
